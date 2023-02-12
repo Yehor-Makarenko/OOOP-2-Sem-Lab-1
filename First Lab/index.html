@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wolfram|Beta</title>
+  <link rel="stylesheet" href="./style/style.css">
+</head>
+
+<body>
+  <div class="forms-container">
+    <form id="drawFuncForm">
+      <b>Draw</b>
+      <br>
+      <div>
+        <span>X resolution:</span>
+        <input type="text" name="xRes">
+      </div>      
+      <div>
+        <span>Y resolution:</span>
+        <input type="text" name="yRes">
+      </div>
+      <br>
+      <div>
+        <span>Enter a function: y=</span>
+        <input type="text" name="userExpr">
+      </div>    
+      <br>
+      <input type="submit" value="Draw">
+    </form>
+
+    <form id="areaForm">
+      <b>Area</b>
+      <br>
+      <div>
+        <span>X resolution:</span>
+        <input type="text" name="xRes">
+      </div>      
+      <div>
+        <span>Y resolution:</span>
+        <input type="text" name="yRes">
+      </div>
+      <div>
+        <span>Left boundary:</span>
+        <input type="text" name="lBound">
+      </div>
+      <div>
+        <span>Right boundary:</span>
+        <input type="text" name="rBound">
+      </div>
+      <br>
+      <div>
+        <span>Enter a function: y=</span>
+        <input type="text" name="userExpr"> 
+      </div>
+      <br>
+      <input type="submit" value="Draw">
+      <p id="resultArea">Result area: </p>
+    </form>
+
+    <form id="intersectionForm">
+      <b>Intersection points</b>
+      <br>
+      <div>
+        <span>X resolution:</span>
+        <input type="text" name="xRes">
+      </div>      
+      <div>
+        <span>Y resolution:</span>
+        <input type="text" name="yRes">
+      </div>
+      <div>
+        <span>Left boundary:</span>
+        <input type="text" name="lBound">
+      </div>
+      <div>
+        <span>Right boundary:</span>
+        <input type="text" name="rBound">
+      </div>
+      <br>
+      <div>
+        <span>Enter a function: y1=</span>
+        <input type="text" name="userExpr1">
+      </div>
+      <br>
+      <div>
+        <span>Enter a function: y2=</span>
+        <input type="text" name="userExpr2">
+      </div>
+      <br>
+      <input type="submit" value="Draw">
+      <p id="intersectionPoints">Intersection points: </p>
+    </form>
+  </div>  
+
+  <div class="canvas-container">
+    <canvas id="tutorial"></canvas>
+  </div>
+
+  <script src="./script/classes/Point.js"></script>
+  <script src="./script/classes/Queue.js"></script>
+  <script src="./script/classes/Stack.js"></script>
+  <script src="./script/ReversePolishNotation.js"></script>
+  <script src="./script/Intersection.js"></script>
+  <script src="./script/script.js"></script>
+</body>
+
+</html>

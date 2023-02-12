@@ -1,0 +1,46 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.forms-container {
+  display: flex;
+  align-items: start;
+  flex-wrap: nowrap;  
+}
+
+form {
+  margin: 20px;
+  padding: 15px;
+  border: 2px solid black;
+  display: inline-block;  
+}
+
+form>* {
+  margin-top: 20px;
+}
+
+form>div {
+  display: inline-block;
+}
+
+form>b {
+  font-size: 18px;
+}
+
+form input[type="submit"] {
+  padding: 2px 15px;
+}
+
+form>p {
+  white-space: pre-wrap;
+}
+
+.canvas-container {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.canvas-container canvas {
+  background-color: #ccc;
+}
