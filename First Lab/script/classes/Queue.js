@@ -1,4 +1,4 @@
-class Queue {  
+export default class Queue {  
   #value = null; 
   #next = null;
   #head = null;

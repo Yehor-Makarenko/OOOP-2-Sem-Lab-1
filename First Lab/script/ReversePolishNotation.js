@@ -1,3 +1,7 @@
+import Stack from "./classes/Stack.js";
+import Queue from "./classes/Queue.js";
+export { calcReversePolishNotation, getReversePolishNotation, getOperand, getOperator, OPERATORS };
+
 const OPERATORS = {
   ",": {type: ",", priority: 0},
   "(": {type: "(", priority: 0},

@@ -1,3 +1,5 @@
+import { calcReversePolishNotation, getReversePolishNotation } from "./ReversePolishNotation.js";
+
 const canvas = document.getElementById("tutorial");
 const context = canvas.getContext("2d");
 const cw = canvas.width = 800;
