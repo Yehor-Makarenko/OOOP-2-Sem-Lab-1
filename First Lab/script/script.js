@@ -65,12 +65,12 @@ areaForm.onsubmit = function(event) {
     const y = calcReversePolishNotation(reversePolishNotation, x).value;
     const contextY = toContextY(y, yRes);
 
-    if (isNaN(y)) {
+    if (!isFinite(y)) {
       resArea = NaN;
       break;
     }
     
-    if (isFinite(y)) resArea += y;
+    resArea += y;
 
     context.lineTo(i, contextY);
   }  
