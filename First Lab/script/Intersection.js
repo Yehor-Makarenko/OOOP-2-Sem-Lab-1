@@ -1,4 +1,6 @@
-function getIntersectionPoints(reversePolishNotation1, reversePolishNotation2, numOfIntervals, lBound, rBound) {  
+import Point from "./classes/Point.js";
+
+export default function getIntersectionPoints(reversePolishNotation1, reversePolishNotation2, numOfIntervals, lBound, rBound) {  
   const diff = rBound - lBound;
   const resultPoints = [];
 

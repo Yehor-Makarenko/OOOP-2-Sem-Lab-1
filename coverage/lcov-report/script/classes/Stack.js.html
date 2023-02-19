@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">5% </span>
+                <span class="strong">47.36% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/20</span>
+                <span class='fraction'>9/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>2/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>3/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">5.55% </span>
+                <span class="strong">41.17% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/18</span>
+                <span class='fraction'>7/17</span>
             </div>
         
             
@@ -96,16 +96,14 @@
 <a name='L31'></a><a href='#L31'>31</a>
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
-<a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a>
-<a name='L36'></a><a href='#L36'>36</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L34'></a><a href='#L34'>34</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -118,7 +116,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -128,19 +126,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">class Stack {
-  #value = <span class="cstat-no" title="statement not covered" >null;</span>
-  #prev = <span class="cstat-no" title="statement not covered" >null;</span>
-  #tale = <span class="cstat-no" title="statement not covered" >null;</span>
-  #length = <span class="cstat-no" title="statement not covered" >0;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">export default class Stack {
+  #value = null;
+  #prev = null;
+  #tale = null;
+  #length = 0;
 &nbsp;
-<span class="fstat-no" title="function not covered" >  ge</span>t length() {
-<span class="cstat-no" title="statement not covered" >    return this.#length;</span>
+  get length() {
+    return this.#length;
   }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  pu</span>sh(value) {
@@ -152,8 +148,8 @@
 <span class="cstat-no" title="statement not covered" >    this.#length++;</span>
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  po</span>p() {
-<span class="cstat-no" title="statement not covered" >    if (this.#tale === null) <span class="cstat-no" title="statement not covered" >return null;</span></span>
+  pop() {
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (this.#tale === null) return null;
 &nbsp;
     const resValue = <span class="cstat-no" title="statement not covered" >this.#tale.#value;</span>
 <span class="cstat-no" title="statement not covered" >    this.#tale = this.#tale.#prev;</span>
@@ -162,20 +158,18 @@
 <span class="cstat-no" title="statement not covered" >    return resValue;</span>
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  ge</span>t() {
-<span class="cstat-no" title="statement not covered" >    if (this.#tale === null) <span class="cstat-no" title="statement not covered" >return null;</span></span>
+  get() {
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (this.#tale === null) return null;
 <span class="cstat-no" title="statement not covered" >    return this.#tale.#value;</span>
   }
-}
-&nbsp;
-module.exports = Stack;</pre></td></tr></table></pre>
+}</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-02-19T19:18:27.124Z
+                at 2023-02-19T20:10:01.841Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
