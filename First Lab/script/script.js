@@ -63,7 +63,7 @@ areaForm.onsubmit = function(event) {
   for (let i = contextLBound; i <= contextRBound; i++) {     
     const x = (i - cw / 2) * xRes / (cw / 2);
     const y = calcReversePolishNotation(reversePolishNotation, x).value;
-    const contextY = toContextY(y, yRes);
+    const contextY = toContextY(y, ch, yRes);
 
     if (!isFinite(y)) {
       resArea = NaN;
@@ -124,7 +124,7 @@ intersectionForm.onsubmit = function(event) {
 
   for (let point of intersectionPoints) {
     context.beginPath();
-    context.arc(toContextX(point.x, xRes), toContextY(point.y, yRes), IntersectionPointsRadius, 0, 2 * Math.PI);
+    context.arc(toContextX(point.x, cw, xRes), toContextY(point.y, ch, yRes), IntersectionPointsRadius, 0, 2 * Math.PI);
     context.fill();
   }
   
@@ -147,7 +147,7 @@ function drawFunc(reversePolishNotation, context, strokeStyle, lineWidth, cw, ch
   for (let i = 0; i < cw; i++) {     
     const x = (i - cw / 2) * xRes / (cw / 2);
     const y = calcReversePolishNotation(reversePolishNotation, x).value;    
-    const contextY = toContextY(y, yRes);
+    const contextY = toContextY(y, ch, yRes);
 
     if (isNaN(y)) continue;
 
@@ -207,10 +207,10 @@ function drawCoordSystem(context, strokeStyle, lineWidth, cw, ch, xRes, yRes) {
   context.closePath();
 }
 
-function toContextX(x, xRes) {
+function toContextX(x, cw, xRes) {
   return x * (cw / 2) / xRes + (cw / 2);
 }
 
-function toContextY(y, yRes) {
+function toContextY(y, ch, yRes) {
   return ch / 2 - y * (ch / 2) / yRes;
 }
