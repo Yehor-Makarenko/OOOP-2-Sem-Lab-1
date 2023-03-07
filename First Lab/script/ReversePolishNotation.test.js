@@ -42,3 +42,33 @@ test("Return correct operand", () => {
   expect(getOperand("a")).toBeNull();
 });
 
+test("Return correct RPN", () => {    
+  expect(getRPNFields(getReversePolishNotation("x")[0])).toEqual([getOperand("x")[0]]);
+  expect(getRPNFields(getReversePolishNotation("-x")[0])).toEqual([getOperand("x")[0], OPERATORS["u-"]]);
+  expect(getRPNFields(getReversePolishNotation("x + 2")[0])).toEqual([getOperand("x")[0], getOperand("2")[0], OPERATORS["+"]]);
+  expect(getRPNFields(getReversePolishNotation("x - 2")[0])).toEqual([getOperand("x")[0], getOperand("2")[0], OPERATORS["-"]]);
+  expect(getRPNFields(getReversePolishNotation("x * 2")[0])).toEqual([getOperand("x")[0], getOperand("2")[0], OPERATORS["*"]]);
+  expect(getRPNFields(getReversePolishNotation("x / 2")[0])).toEqual([getOperand("x")[0], getOperand("2")[0], OPERATORS["/"]]);
+  expect(getRPNFields(getReversePolishNotation("1 + 2 * 3")[0])).toEqual([getOperand("1")[0], getOperand("2")[0], getOperand("3")[0], OPERATORS["*"], OPERATORS["+"]]);
+  expect(getRPNFields(getReversePolishNotation("(1 + 2) * 3")[0])).toEqual([getOperand("1")[0], getOperand("2")[0], OPERATORS["+"], getOperand("3")[0], OPERATORS["*"]]);
+  expect(getRPNFields(getReversePolishNotation("1 + -2 * 3")[0])).toEqual([getOperand("1")[0], getOperand("2")[0], OPERATORS["u-"], getOperand("3")[0], OPERATORS["*"], OPERATORS["+"]]);
+
+  expect(getReversePolishNotation("xx")).toBeNull();
+  expect(getReversePolishNotation("2++3")).toBeNull();
+  expect(getReversePolishNotation("+5")).toBeNull();
+  expect(getReversePolishNotation("2**4")).toBeNull();
+  expect(getReversePolishNotation("* 4")).toBeNull();
+
+  function getRPNFields(rnp) {
+    const result = [];
+    let currItem = rnp.head;
+  
+    while (currItem !== null) {
+      result.push(currItem.value);
+      currItem = currItem.next;      
+    }
+
+    return result;
+  }
+});
+
