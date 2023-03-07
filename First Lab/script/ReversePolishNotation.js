@@ -109,7 +109,7 @@ function calcReversePolishNotation(reversePolishNotation, varValue) {
       case "^":
         fItem = result.pop();
         sItem = result.pop();        
-
+                
         if (sItem.value < 0 && fItem.isVar) return NaN;
 
         result.push({value: Math.pow(sItem.value, fItem.value), isVar: fItem.isVar || sItem.isVar});
@@ -120,7 +120,6 @@ function calcReversePolishNotation(reversePolishNotation, varValue) {
   }
 
   return result.pop();
-
 }
 
 function getReversePolishNotation(expr, startPos = 0, variable = "x") {

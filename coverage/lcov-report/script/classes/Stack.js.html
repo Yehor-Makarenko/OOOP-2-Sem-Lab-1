@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">47.36% </span>
+                <span class="strong">94.73% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>9/19</span>
+                <span class='fraction'>18/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.17% </span>
+                <span class="strong">94.11% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/17</span>
+                <span class='fraction'>16/17</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -97,70 +97,70 @@
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
 <a name='L34'></a><a href='#L34'>34</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">54x</span>
+<span class="cline-any cline-yes">54x</span>
+<span class="cline-any cline-yes">54x</span>
+<span class="cline-any cline-yes">54x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">export default class Stack {
-  #value = null;
-  #prev = null;
-  #tale = null;
-  #length = 0;
+  value = null;
+  prev = null;
+  tale = null;
+  length = 0;
 &nbsp;
-  get length() {
-    return this.#length;
+<span class="fstat-no" title="function not covered" >  ge</span>t length() {
+<span class="cstat-no" title="statement not covered" >    return this.length;</span>
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  pu</span>sh(value) {
-    const newItem = <span class="cstat-no" title="statement not covered" >new Stack();</span>
+  push(value) {
+    const newItem = new Stack();
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    newItem.#value = value;</span>
-<span class="cstat-no" title="statement not covered" >    newItem.#prev = this.#tale;</span>
-<span class="cstat-no" title="statement not covered" >    this.#tale = newItem;</span>
-<span class="cstat-no" title="statement not covered" >    this.#length++;</span>
+    newItem.value = value;
+    newItem.prev = this.tale;
+    this.tale = newItem;
+    this.length++;
   }
 &nbsp;
   pop() {
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (this.#tale === null) return null;
+    if (this.tale === null) return null;
 &nbsp;
-    const resValue = <span class="cstat-no" title="statement not covered" >this.#tale.#value;</span>
-<span class="cstat-no" title="statement not covered" >    this.#tale = this.#tale.#prev;</span>
-<span class="cstat-no" title="statement not covered" >    this.#length--;</span>
+    const resValue = this.tale.value;
+    this.tale = this.tale.prev;
+    this.length--;
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    return resValue;</span>
+    return resValue;
   }
 &nbsp;
   get() {
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (this.#tale === null) return null;
-<span class="cstat-no" title="statement not covered" >    return this.#tale.#value;</span>
+    if (this.tale === null) return null;
+    return this.tale.value;
   }
 }</pre></td></tr></table></pre>
 
@@ -169,7 +169,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-02-19T20:10:01.841Z
+                at 2023-03-07T16:31:28.551Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
