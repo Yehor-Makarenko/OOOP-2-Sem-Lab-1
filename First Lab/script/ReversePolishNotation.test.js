@@ -72,3 +72,31 @@ test("Return correct RPN", () => {
   }
 });
 
+test("Return correct RPN value", () => {
+  for (let i = 0; i < 1000; i++) {
+    const randValue1 = Math.random() * 10000 - 5000;
+    const randValue2 = Math.random() * 10000 - 5000;
+    const randNormalizedValue = Math.random() * 2 - 1;
+    const randSmallValue1 = Math.random() * 10 - 5;
+    const randSmallValue2 = Math.random() * 10 - 5;
+    
+    expect(calcReversePolishNotation(getReversePolishNotation(`x + ${randValue2}`)[0], randValue1).value).toBeCloseTo(randValue1 + randValue2);
+    expect(calcReversePolishNotation(getReversePolishNotation(`x - ${randValue2}`)[0], randValue1).value).toBeCloseTo(randValue1 - randValue2);
+    expect(calcReversePolishNotation(getReversePolishNotation(`x * ${randValue2}`)[0], randValue1).value).toBeCloseTo(randValue1 * randValue2);
+    expect(calcReversePolishNotation(getReversePolishNotation(`x / ${randValue2}`)[0], randValue1).value).toBeCloseTo(randValue1 / randValue2);
+    expect(calcReversePolishNotation(getReversePolishNotation("sin(x)")[0], randValue1).value).toBeCloseTo(Math.sin(randValue1));
+    expect(calcReversePolishNotation(getReversePolishNotation("cos(x)")[0], randValue1).value).toBeCloseTo(Math.cos(randValue1));
+    expect(calcReversePolishNotation(getReversePolishNotation("tan(x)")[0], randValue1).value).toBeCloseTo(Math.tan(randValue1));
+    expect(calcReversePolishNotation(getReversePolishNotation("cot(x)")[0], randValue1).value).toBeCloseTo(1 / Math.tan(randValue1));
+    expect(calcReversePolishNotation(getReversePolishNotation("arcsin(x)")[0], randNormalizedValue).value).toBeCloseTo(Math.asin(randNormalizedValue));
+    expect(calcReversePolishNotation(getReversePolishNotation("arccos(x)")[0], randNormalizedValue).value).toBeCloseTo(Math.acos(randNormalizedValue));
+    expect(calcReversePolishNotation(getReversePolishNotation("arctan(x)")[0], randValue1).value).toBeCloseTo(Math.atan(randValue1));
+    expect(calcReversePolishNotation(getReversePolishNotation("arccot(x)")[0], randValue1).value).toBeCloseTo(Math.PI / 2 - Math.atan(randValue1));
+    expect(calcReversePolishNotation(getReversePolishNotation("e^x")[0], randSmallValue1).value).toBeCloseTo(Math.E**randSmallValue1);
+    expect(calcReversePolishNotation(getReversePolishNotation(`x^${randSmallValue1}`)[0], Math.abs(randSmallValue2)).value).toBeCloseTo(Math.abs(randSmallValue2)**randSmallValue1);
+    expect(calcReversePolishNotation(getReversePolishNotation(`${Math.abs(randSmallValue1)}^x`)[0], randSmallValue2).value).toBeCloseTo(Math.abs(randSmallValue1)**randSmallValue2);
+    expect(calcReversePolishNotation(getReversePolishNotation("ln(x)")[0], Math.abs(randValue1)).value).toBeCloseTo(Math.log(Math.abs(randValue1)));
+    expect(calcReversePolishNotation(getReversePolishNotation("lg(x)")[0], Math.abs(randValue1)).value).toBeCloseTo(Math.log10(Math.abs(randValue1)));
+    expect(calcReversePolishNotation(getReversePolishNotation(`log(${Math.abs(randValue1)}, x)`)[0], Math.abs(randValue2)).value).toBeCloseTo(Math.log(Math.abs(randValue2)) / Math.log(Math.abs(randValue1)));
+  }
+});
