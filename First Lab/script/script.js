@@ -1,5 +1,5 @@
 import { calcReversePolishNotation, getReversePolishNotation } from "./ReversePolishNotation.js";
-import getIntersectionPoints from "./Intersection.js";
+import { getIntersectionPoints } from "./Intersection.js";
 
 const canvas = document.getElementById("tutorial");
 const context = canvas.getContext("2d");

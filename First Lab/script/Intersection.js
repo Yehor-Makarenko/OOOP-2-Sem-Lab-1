@@ -1,6 +1,9 @@
 import Point from "./classes/Point.js";
+import Queue from "./classes/Queue.js";
+import { calcReversePolishNotation, OPERATORS } from "./ReversePolishNotation.js";
+export { getIntersectionPoints, newtonMethod };
 
-export default function getIntersectionPoints(reversePolishNotation1, reversePolishNotation2, numOfIntervals, lBound, rBound) {  
+function getIntersectionPoints(reversePolishNotation1, reversePolishNotation2, numOfIntervals, lBound, rBound) {  
   const diff = rBound - lBound;
   const resultPoints = [];
 

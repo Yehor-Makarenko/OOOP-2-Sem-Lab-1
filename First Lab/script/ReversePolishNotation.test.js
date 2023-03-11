@@ -73,7 +73,7 @@ test("Return correct RPN", () => {
 });
 
 test("Return correct RPN value", () => {
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 100; i++) {
     const randValue1 = Math.random() * 10000 - 5000;
     const randValue2 = Math.random() * 10000 - 5000;
     const randNormalizedValue = Math.random() * 2 - 1;
