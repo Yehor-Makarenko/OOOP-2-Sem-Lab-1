@@ -3,6 +3,7 @@ import Queue from "./classes/Queue.js";
 import { calcReversePolishNotation, OPERATORS } from "./ReversePolishNotation.js";
 export { getIntersectionPoints, newtonMethod };
 
+// lBound and rBound on x axis
 function getIntersectionPoints(reversePolishNotation1, reversePolishNotation2, numOfIntervals, lBound, rBound) {  
   const diff = rBound - lBound;
   const resultPoints = [];

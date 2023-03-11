@@ -21,3 +21,24 @@ test("Test Newton's method", () => {
   expect(newtonMethod(getReversePolishNotation("lg(x) - 1")[0], 9, 0.001)).toBeCloseTo(10);
   expect(newtonMethod(getReversePolishNotation("log(2, x) - 8")[0], 200, 0.001)).toBeCloseTo(256);
 });
+
+test("Test getIntersectionPoints function", () => {
+expect(getIntersectionPoints(getReversePolishNotation("1 / x")[0], getReversePolishNotation("0")[0], 1000, -5, 5)).toEqual([]);
+
+  let receivedPoints = getIntersectionPoints(getReversePolishNotation("sin(x)")[0], getReversePolishNotation("cos(x)")[0], 1000, -5, 5);
+  let expectedX = [Math.PI / 4 - Math.PI, Math.PI / 4, Math.PI / 4 + Math.PI];
+  let expectedY = [-Math.sqrt(2) / 2, Math.sqrt(2) / 2, -Math.sqrt(2) / 2];
+  comparePoints(receivedPoints, expectedX, expectedY);
+
+  receivedPoints = getIntersectionPoints(getReversePolishNotation("x^2 + 3*x")[0], getReversePolishNotation("1")[0], 1000, -5, 5);
+  expectedX = [(-3 - Math.sqrt(13)) / 2, (-3 + Math.sqrt(13)) / 2];
+  expectedY = [1, 1];
+  comparePoints(receivedPoints, expectedX, expectedY);
+});
+
+function comparePoints(receivedPoints, expectedX, expectedY) {
+  for (let i = 0 ; i < receivedPoints.length; i++) {
+    expect(receivedPoints[i].x).toBeCloseTo(expectedX[i]);
+    expect(receivedPoints[i].y).toBeCloseTo(expectedY[i]);
+  }
+}
