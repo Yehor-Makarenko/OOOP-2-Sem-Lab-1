@@ -1,4 +1,4 @@
-import { calcReversePolishNotation, getReversePolishNotation } from "./ReversePolishNotation.js";
+import { calcRPN, getRPN } from "./ReversePolishNotation.js";
 import { getIntersectionPoints } from "./Intersection.js";
 
 const canvas = document.getElementById("tutorial");
@@ -15,25 +15,25 @@ const IntersectionPointsColor = "red";
 const IntersectionPointsRadius = 4;
 const CoordSystemColor = "black";
 const CoordSystemWidth = 1;
-const ResultPrecision = 5;
+const ResultPrecision = 5;  
 
 drawFuncForm.onsubmit = function(event) {
   event.preventDefault();
   context.clearRect(0, 0, cw, ch);
 
   const expr = drawFuncForm.elements.userExpr.value.trim();
-  const reversePolishNotationData = getReversePolishNotation(expr);
+  const rpnData = getRPN(expr);
 
-  if (reversePolishNotationData === null || reversePolishNotationData[1] < expr.length) {
+  if (rpnData === null || rpnData[1] < expr.length) {
     console.log("Invalid input");
     return;
   }
 
-  const reversePolishNotation = reversePolishNotationData[0];
+  const rpn = rpnData[0];
   const xRes = +drawFuncForm.elements.xRes.value;
   const yRes = +drawFuncForm.elements.yRes.value;  
 
-  drawFunc(reversePolishNotation, context, FuncColor, FuncWidth, cw, ch, xRes, yRes);
+  drawFunc(rpn, context, FuncColor, FuncWidth, cw, ch, xRes, yRes);
 
   drawCoordSystem(context, CoordSystemColor, CoordSystemWidth, cw, ch, xRes, yRes);
 }
@@ -43,14 +43,14 @@ areaForm.onsubmit = function(event) {
   context.clearRect(0, 0, cw, ch);
   
   const expr = areaForm.elements.userExpr.value.trim();
-  const reversePolishNotationData = getReversePolishNotation(expr);
+  const rpnData = getRPN(expr);
 
-  if (reversePolishNotationData === null || reversePolishNotationData[1] < expr.length) {
+  if (rpnData === null || rpnData[1] < expr.length) {
     console.log("Invalid input");
     return;
   }
 
-  const reversePolishNotation = reversePolishNotationData[0];
+  const rpn = rpnData[0];
   const xRes = +areaForm.elements.xRes.value;
   const yRes = +areaForm.elements.yRes.value;
   const lBound = +areaForm.elements.lBound.value;
@@ -65,7 +65,7 @@ areaForm.onsubmit = function(event) {
 
   for (let i = contextLBound; i <= contextRBound; i++) {     
     const x = (i - cw / 2) * xRes / (cw / 2);
-    const y = calcReversePolishNotation(reversePolishNotation, x).value;
+    const y = calcRPN(rpn, x).value;
     const contextY = toContextY(y, ch, yRes);
 
     if (!isFinite(y)) {
@@ -85,12 +85,14 @@ areaForm.onsubmit = function(event) {
     context.fill();
   }  
 
-  drawFunc(reversePolishNotation, context, FuncColor, FuncWidth, cw, ch, xRes, yRes);
+  drawFunc(rpn, context, FuncColor, FuncWidth, cw, ch, xRes, yRes);
 
   drawCoordSystem(context, CoordSystemColor, CoordSystemWidth, cw, ch, xRes, yRes);
 
   document.getElementById("resultArea").innerHTML = `Result area: <b>${+(resArea * (rBound - lBound) / (contextRBound - contextLBound)).toFixed(ResultPrecision)}</b>`;
 }
+
+
 
 intersectionForm.onsubmit = function(event) {
   event.preventDefault();
@@ -98,27 +100,27 @@ intersectionForm.onsubmit = function(event) {
 
   const expr1 = intersectionForm.elements.userExpr1.value.trim();
   const expr2 = intersectionForm.elements.userExpr2.value.trim();  
-  const reversePolishNotationData1 = getReversePolishNotation(expr1);
-  const reversePolishNotationData2 = getReversePolishNotation(expr2);
+  const rpnData1 = getRPN(expr1);
+  const rpnData2 = getRPN(expr2);
 
-  if (reversePolishNotationData1 === null || reversePolishNotationData1[1] < expr1.length
-    || reversePolishNotationData2 === null || reversePolishNotationData2[1] < expr2.length) {
+  if (rpnData1 === null || rpnData1[1] < expr1.length
+    || rpnData2 === null || rpnData2[1] < expr2.length) {
     console.log("Invalid input");
     return;
   }
 
-  const reversePolishNotation1 = reversePolishNotationData1[0];
-  const reversePolishNotation2 = reversePolishNotationData2[0];
+  const rpn1 = rpnData1[0];
+  const rpn2 = rpnData2[0];
   const xRes = +intersectionForm.elements.xRes.value;
   const yRes = +intersectionForm.elements.yRes.value;
   const lBound = +intersectionForm.elements.lBound.value;
   const rBound = +intersectionForm.elements.rBound.value;
-  const intersectionPoints = getIntersectionPoints(reversePolishNotation1, reversePolishNotation2, cw, lBound, rBound);
+  const intersectionPoints = getIntersectionPoints(rpn1, rpn2, cw, lBound, rBound);
   
   context.beginPath();  
 
-  drawFunc(reversePolishNotation1, context, FuncColor, 2, cw, ch, xRes, yRes);
-  drawFunc(reversePolishNotation2, context, FuncColor, 2, cw, ch, xRes, yRes);
+  drawFunc(rpn1, context, FuncColor, 2, cw, ch, xRes, yRes);
+  drawFunc(rpn2, context, FuncColor, 2, cw, ch, xRes, yRes);
 
   drawCoordSystem(context, CoordSystemColor, 1, cw, ch, xRes, yRes);
 
@@ -140,7 +142,7 @@ intersectionForm.onsubmit = function(event) {
   document.getElementById("intersectionPoints").innerHTML = `Intersection points:${[...pointsSet.values()].join("")}`;
 }
 
-function drawFunc(reversePolishNotation, context, strokeStyle, lineWidth, cw, ch, xRes, yRes) {
+function drawFunc(rpn, context, strokeStyle, lineWidth, cw, ch, xRes, yRes) {
   let lastX = NaN, lastY = NaN, needToMoveTo = true;
 
   context.strokeStyle = strokeStyle;  
@@ -149,7 +151,7 @@ function drawFunc(reversePolishNotation, context, strokeStyle, lineWidth, cw, ch
 
   for (let i = 0; i < cw; i++) {     
     const x = (i - cw / 2) * xRes / (cw / 2);
-    const y = calcReversePolishNotation(reversePolishNotation, x).value;    
+    const y = calcRPN(rpn, x).value;    
     const contextY = toContextY(y, ch, yRes);
 
     if (isNaN(y)) continue;

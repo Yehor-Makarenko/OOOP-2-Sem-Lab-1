@@ -1,4 +1,4 @@
-import { calcReversePolishNotation, getReversePolishNotation, getOperand, getOperator, OPERATORS } from "./ReversePolishNotation.js";
+import { calcRPN, getRPN, getOperand, getOperator, OPERATORS } from "./ReversePolishNotation.js";
 import Queue from "./classes/Queue.js";
 
 test("Return correct operator", () => {  
@@ -43,21 +43,21 @@ test("Return correct operand", () => {
 });
 
 test("Return correct RPN", () => {    
-  expect(getRPNFields(getReversePolishNotation("x")[0])).toEqual([getOperand("x")[0]]);
-  expect(getRPNFields(getReversePolishNotation("-x")[0])).toEqual([getOperand("x")[0], OPERATORS["u-"]]);
-  expect(getRPNFields(getReversePolishNotation("x + 2")[0])).toEqual([getOperand("x")[0], getOperand("2")[0], OPERATORS["+"]]);
-  expect(getRPNFields(getReversePolishNotation("x - 2")[0])).toEqual([getOperand("x")[0], getOperand("2")[0], OPERATORS["-"]]);
-  expect(getRPNFields(getReversePolishNotation("x * 2")[0])).toEqual([getOperand("x")[0], getOperand("2")[0], OPERATORS["*"]]);
-  expect(getRPNFields(getReversePolishNotation("x / 2")[0])).toEqual([getOperand("x")[0], getOperand("2")[0], OPERATORS["/"]]);
-  expect(getRPNFields(getReversePolishNotation("1 + 2 * 3")[0])).toEqual([getOperand("1")[0], getOperand("2")[0], getOperand("3")[0], OPERATORS["*"], OPERATORS["+"]]);
-  expect(getRPNFields(getReversePolishNotation("(1 + 2) * 3")[0])).toEqual([getOperand("1")[0], getOperand("2")[0], OPERATORS["+"], getOperand("3")[0], OPERATORS["*"]]);
-  expect(getRPNFields(getReversePolishNotation("1 + -2 * 3")[0])).toEqual([getOperand("1")[0], getOperand("2")[0], OPERATORS["u-"], getOperand("3")[0], OPERATORS["*"], OPERATORS["+"]]);
+  expect(getRPNFields(getRPN("x")[0])).toEqual([getOperand("x")[0]]);
+  expect(getRPNFields(getRPN("-x")[0])).toEqual([getOperand("x")[0], OPERATORS["u-"]]);
+  expect(getRPNFields(getRPN("x + 2")[0])).toEqual([getOperand("x")[0], getOperand("2")[0], OPERATORS["+"]]);
+  expect(getRPNFields(getRPN("x - 2")[0])).toEqual([getOperand("x")[0], getOperand("2")[0], OPERATORS["-"]]);
+  expect(getRPNFields(getRPN("x * 2")[0])).toEqual([getOperand("x")[0], getOperand("2")[0], OPERATORS["*"]]);
+  expect(getRPNFields(getRPN("x / 2")[0])).toEqual([getOperand("x")[0], getOperand("2")[0], OPERATORS["/"]]);
+  expect(getRPNFields(getRPN("1 + 2 * 3")[0])).toEqual([getOperand("1")[0], getOperand("2")[0], getOperand("3")[0], OPERATORS["*"], OPERATORS["+"]]);
+  expect(getRPNFields(getRPN("(1 + 2) * 3")[0])).toEqual([getOperand("1")[0], getOperand("2")[0], OPERATORS["+"], getOperand("3")[0], OPERATORS["*"]]);
+  expect(getRPNFields(getRPN("1 + -2 * 3")[0])).toEqual([getOperand("1")[0], getOperand("2")[0], OPERATORS["u-"], getOperand("3")[0], OPERATORS["*"], OPERATORS["+"]]);
 
-  expect(getReversePolishNotation("xx")).toBeNull();
-  expect(getReversePolishNotation("2++3")).toBeNull();
-  expect(getReversePolishNotation("+5")).toBeNull();
-  expect(getReversePolishNotation("2**4")).toBeNull();
-  expect(getReversePolishNotation("* 4")).toBeNull();
+  expect(getRPN("xx")).toBeNull();
+  expect(getRPN("2++3")).toBeNull();
+  expect(getRPN("+5")).toBeNull();
+  expect(getRPN("2**4")).toBeNull();
+  expect(getRPN("* 4")).toBeNull();
 
   function getRPNFields(rnp) {
     const result = [];
@@ -80,23 +80,23 @@ test("Return correct RPN value", () => {
     const randSmallValue1 = Math.random() * 10 - 5;
     const randSmallValue2 = Math.random() * 10 - 5;
     
-    expect(calcReversePolishNotation(getReversePolishNotation(`x + ${randValue2}`)[0], randValue1).value).toBeCloseTo(randValue1 + randValue2);
-    expect(calcReversePolishNotation(getReversePolishNotation(`x - ${randValue2}`)[0], randValue1).value).toBeCloseTo(randValue1 - randValue2);
-    expect(calcReversePolishNotation(getReversePolishNotation(`x * ${randValue2}`)[0], randValue1).value).toBeCloseTo(randValue1 * randValue2);
-    expect(calcReversePolishNotation(getReversePolishNotation(`x / ${randValue2}`)[0], randValue1).value).toBeCloseTo(randValue1 / randValue2);
-    expect(calcReversePolishNotation(getReversePolishNotation("sin(x)")[0], randValue1).value).toBeCloseTo(Math.sin(randValue1));
-    expect(calcReversePolishNotation(getReversePolishNotation("cos(x)")[0], randValue1).value).toBeCloseTo(Math.cos(randValue1));
-    expect(calcReversePolishNotation(getReversePolishNotation("tan(x)")[0], randValue1).value).toBeCloseTo(Math.tan(randValue1));
-    expect(calcReversePolishNotation(getReversePolishNotation("cot(x)")[0], randValue1).value).toBeCloseTo(1 / Math.tan(randValue1));
-    expect(calcReversePolishNotation(getReversePolishNotation("arcsin(x)")[0], randNormalizedValue).value).toBeCloseTo(Math.asin(randNormalizedValue));
-    expect(calcReversePolishNotation(getReversePolishNotation("arccos(x)")[0], randNormalizedValue).value).toBeCloseTo(Math.acos(randNormalizedValue));
-    expect(calcReversePolishNotation(getReversePolishNotation("arctan(x)")[0], randValue1).value).toBeCloseTo(Math.atan(randValue1));
-    expect(calcReversePolishNotation(getReversePolishNotation("arccot(x)")[0], randValue1).value).toBeCloseTo(Math.PI / 2 - Math.atan(randValue1));
-    expect(calcReversePolishNotation(getReversePolishNotation("e^x")[0], randSmallValue1).value).toBeCloseTo(Math.E**randSmallValue1);
-    expect(calcReversePolishNotation(getReversePolishNotation(`x^${randSmallValue1}`)[0], Math.abs(randSmallValue2)).value).toBeCloseTo(Math.abs(randSmallValue2)**randSmallValue1);
-    expect(calcReversePolishNotation(getReversePolishNotation(`${Math.abs(randSmallValue1)}^x`)[0], randSmallValue2).value).toBeCloseTo(Math.abs(randSmallValue1)**randSmallValue2);
-    expect(calcReversePolishNotation(getReversePolishNotation("ln(x)")[0], Math.abs(randValue1)).value).toBeCloseTo(Math.log(Math.abs(randValue1)));
-    expect(calcReversePolishNotation(getReversePolishNotation("lg(x)")[0], Math.abs(randValue1)).value).toBeCloseTo(Math.log10(Math.abs(randValue1)));
-    expect(calcReversePolishNotation(getReversePolishNotation(`log(${Math.abs(randValue1)}, x)`)[0], Math.abs(randValue2)).value).toBeCloseTo(Math.log(Math.abs(randValue2)) / Math.log(Math.abs(randValue1)));
+    expect(calcRPN(getRPN(`x + ${randValue2}`)[0], randValue1).value).toBeCloseTo(randValue1 + randValue2);
+    expect(calcRPN(getRPN(`x - ${randValue2}`)[0], randValue1).value).toBeCloseTo(randValue1 - randValue2);
+    expect(calcRPN(getRPN(`x * ${randValue2}`)[0], randValue1).value).toBeCloseTo(randValue1 * randValue2);
+    expect(calcRPN(getRPN(`x / ${randValue2}`)[0], randValue1).value).toBeCloseTo(randValue1 / randValue2);
+    expect(calcRPN(getRPN("sin(x)")[0], randValue1).value).toBeCloseTo(Math.sin(randValue1));
+    expect(calcRPN(getRPN("cos(x)")[0], randValue1).value).toBeCloseTo(Math.cos(randValue1));
+    expect(calcRPN(getRPN("tan(x)")[0], randValue1).value).toBeCloseTo(Math.tan(randValue1));
+    expect(calcRPN(getRPN("cot(x)")[0], randValue1).value).toBeCloseTo(1 / Math.tan(randValue1));
+    expect(calcRPN(getRPN("arcsin(x)")[0], randNormalizedValue).value).toBeCloseTo(Math.asin(randNormalizedValue));
+    expect(calcRPN(getRPN("arccos(x)")[0], randNormalizedValue).value).toBeCloseTo(Math.acos(randNormalizedValue));
+    expect(calcRPN(getRPN("arctan(x)")[0], randValue1).value).toBeCloseTo(Math.atan(randValue1));
+    expect(calcRPN(getRPN("arccot(x)")[0], randValue1).value).toBeCloseTo(Math.PI / 2 - Math.atan(randValue1));
+    expect(calcRPN(getRPN("e^x")[0], randSmallValue1).value).toBeCloseTo(Math.E**randSmallValue1);
+    expect(calcRPN(getRPN(`x^${randSmallValue1}`)[0], Math.abs(randSmallValue2)).value).toBeCloseTo(Math.abs(randSmallValue2)**randSmallValue1);
+    expect(calcRPN(getRPN(`${Math.abs(randSmallValue1)}^x`)[0], randSmallValue2).value).toBeCloseTo(Math.abs(randSmallValue1)**randSmallValue2);
+    expect(calcRPN(getRPN("ln(x)")[0], Math.abs(randValue1)).value).toBeCloseTo(Math.log(Math.abs(randValue1)));
+    expect(calcRPN(getRPN("lg(x)")[0], Math.abs(randValue1)).value).toBeCloseTo(Math.log10(Math.abs(randValue1)));
+    expect(calcRPN(getRPN(`log(${Math.abs(randValue1)}, x)`)[0], Math.abs(randValue2)).value).toBeCloseTo(Math.log(Math.abs(randValue2)) / Math.log(Math.abs(randValue1)));
   }
 });

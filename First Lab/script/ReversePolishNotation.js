@@ -1,6 +1,6 @@
 import Stack from "./classes/Stack.js";
 import Queue from "./classes/Queue.js";
-export { calcReversePolishNotation, getReversePolishNotation, getOperand, getOperator, OPERATORS };
+export { calcRPN, getRPN, getOperand, getOperator, OPERATORS };
 
 const OPERATORS = {
   ",": {type: ",", priority: 0},
@@ -14,10 +14,10 @@ const OPERATORS = {
   "^": {type: "^", priority: 4},
 };
 
-function calcReversePolishNotation(reversePolishNotation, varValue) {
+function calcRPN(rpn, varValue) {
   const result = new Stack();
-  const reversePolishNotationCopy = Queue.copy(reversePolishNotation);
-  let currItem = reversePolishNotationCopy.shift();
+  const rpnCopy = Queue.copy(rpn);
+  let currItem = rpnCopy.shift();
   let base, arg, fItem, sItem;
 
   while (currItem !== null) {
@@ -29,54 +29,54 @@ function calcReversePolishNotation(reversePolishNotation, varValue) {
         result.push({value: varValue, isVar: true});
         break;
       case "ln":
-        arg = calcReversePolishNotation(currItem.value, varValue);
+        arg = calcRPN(currItem.value, varValue);
 
         if (arg.value <= 0) return NaN;
 
         result.push({value: Math.log(arg.value), isVar: arg.isVar});
         break;
       case "lg":
-        arg = calcReversePolishNotation(currItem.value, varValue);
+        arg = calcRPN(currItem.value, varValue);
 
         if (arg.value <= 0) return NaN;
 
         result.push({value: Math.log10(arg.value), isVar: arg.isVar});
         break;
       case "sin":
-        arg = calcReversePolishNotation(currItem.value, varValue);       
+        arg = calcRPN(currItem.value, varValue);       
         result.push({value: Math.sin(arg.value), isVar: arg.isVar});
         break;
       case "cos":
-        arg = calcReversePolishNotation(currItem.value, varValue);       
+        arg = calcRPN(currItem.value, varValue);       
         result.push({value: Math.cos(arg.value), isVar: arg.isVar});
         break;
       case "tan":
-        arg = calcReversePolishNotation(currItem.value, varValue);       
+        arg = calcRPN(currItem.value, varValue);       
         result.push({value: Math.tan(arg.value), isVar: arg.isVar});
         break;
       case "cot":
-        arg = calcReversePolishNotation(currItem.value, varValue);       
+        arg = calcRPN(currItem.value, varValue);       
         result.push({value: 1 / Math.tan(arg.value), isVar: arg.isVar});
         break;
       case "arcsin":
-        arg = calcReversePolishNotation(currItem.value, varValue);       
+        arg = calcRPN(currItem.value, varValue);       
         result.push({value: Math.asin(arg.value), isVar: arg.isVar});
         break;
       case "arccos":
-        arg = calcReversePolishNotation(currItem.value, varValue);       
+        arg = calcRPN(currItem.value, varValue);       
         result.push({value: Math.acos(arg.value), isVar: arg.isVar});
         break;
       case "arctan":
-        arg = calcReversePolishNotation(currItem.value, varValue);       
+        arg = calcRPN(currItem.value, varValue);       
         result.push({value: Math.atan(arg.value), isVar: arg.isVar});
         break;
       case "arccot":
-        arg = calcReversePolishNotation(currItem.value, varValue);       
+        arg = calcRPN(currItem.value, varValue);       
         result.push({value: Math.PI / 2 - Math.atan(arg.value), isVar: arg.isVar});
         break;
       case "log":
-        base = calcReversePolishNotation(currItem.value[0], varValue);
-        arg = calcReversePolishNotation(currItem.value[1], varValue);
+        base = calcRPN(currItem.value[0], varValue);
+        arg = calcRPN(currItem.value[1], varValue);
 
         if (base.value <= 0 || base.value === 1 || arg.value <= 0) return NaN;
 
@@ -116,13 +116,13 @@ function calcReversePolishNotation(reversePolishNotation, varValue) {
         break;
     }
 
-    currItem = reversePolishNotationCopy.shift();
+    currItem = rpnCopy.shift();
   }
 
   return result.pop();
 }
 
-function getReversePolishNotation(expr, startPos = 0, variable = "x") {
+function getRPN(expr, startPos = 0, variable = "x") {
   const result = new Queue();
   const operators = new Stack();
   let currPos = startPos;
@@ -286,7 +286,7 @@ function getOperand(expr, startPos = 0, variable = "x") {
       currPos++;
     }
 
-    const argData = getReversePolishNotation(expr, currPos + 1);
+    const argData = getRPN(expr, currPos + 1);
 
     if (argData === null) return null;
 
@@ -303,7 +303,7 @@ function getOperand(expr, startPos = 0, variable = "x") {
   }
 
   if (exprPart.startsWith("log(")) {
-    const logBaseData = getReversePolishNotation(expr, currPos + 4);
+    const logBaseData = getRPN(expr, currPos + 4);
 
     if (logBaseData === null) return null;
 
@@ -313,7 +313,7 @@ function getOperand(expr, startPos = 0, variable = "x") {
 
     if (expr[currPos] !== ",") return null;
 
-    const logArgData = getReversePolishNotation(expr, currPos + 1);
+    const logArgData = getRPN(expr, currPos + 1);
 
     if (logArgData === null) return null;
 
