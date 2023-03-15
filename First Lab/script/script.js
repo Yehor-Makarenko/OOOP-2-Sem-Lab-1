@@ -33,10 +33,12 @@ drawFuncForm.onsubmit = function(event) {
   const xRes = +drawFuncForm.elements.xRes.value;
   const yRes = +drawFuncForm.elements.yRes.value;  
 
-  drawFunc(rpn, context, FuncColor, FuncWidth, cw, ch, xRes, yRes);
+  drawFunc(rpn, context, FuncColor, FuncWidth, xRes, yRes);
 
-  drawCoordSystem(context, CoordSystemColor, CoordSystemWidth, cw, ch, xRes, yRes);
+  drawCoordSystem(context, CoordSystemColor, CoordSystemWidth, xRes, yRes);
 }
+
+
 
 areaForm.onsubmit = function(event) {
   event.preventDefault();
@@ -57,6 +59,14 @@ areaForm.onsubmit = function(event) {
   const rBound = +areaForm.elements.rBound.value;
   const contextLBound = Math.floor(lBound * (cw / 2) / xRes + cw / 2);
   const contextRBound = Math.floor(rBound * (cw / 2) / xRes + cw / 2);
+
+  drawFunc(rpn, context, FuncColor, FuncWidth, xRes, yRes);
+  drawArea()
+
+  drawCoordSystem(context, CoordSystemColor, CoordSystemWidth, xRes, yRes);
+}
+
+function drawArea() {
   let resArea = 0;
 
   context.fillStyle = AreaColor;
@@ -66,7 +76,7 @@ areaForm.onsubmit = function(event) {
   for (let i = contextLBound; i <= contextRBound; i++) {     
     const x = (i - cw / 2) * xRes / (cw / 2);
     const y = calcRPN(rpn, x).value;
-    const contextY = toContextY(y, ch, yRes);
+    const contextY = toContextY(y, yRes);
 
     if (!isFinite(y)) {
       resArea = NaN;
@@ -85,14 +95,8 @@ areaForm.onsubmit = function(event) {
     context.fill();
   }  
 
-  drawFunc(rpn, context, FuncColor, FuncWidth, cw, ch, xRes, yRes);
-
-  drawCoordSystem(context, CoordSystemColor, CoordSystemWidth, cw, ch, xRes, yRes);
-
   document.getElementById("resultArea").innerHTML = `Result area: <b>${+(resArea * (rBound - lBound) / (contextRBound - contextLBound)).toFixed(ResultPrecision)}</b>`;
 }
-
-
 
 intersectionForm.onsubmit = function(event) {
   event.preventDefault();
@@ -119,17 +123,17 @@ intersectionForm.onsubmit = function(event) {
   
   context.beginPath();  
 
-  drawFunc(rpn1, context, FuncColor, 2, cw, ch, xRes, yRes);
-  drawFunc(rpn2, context, FuncColor, 2, cw, ch, xRes, yRes);
+  drawFunc(rpn1, context, FuncColor, 2, xRes, yRes);
+  drawFunc(rpn2, context, FuncColor, 2, xRes, yRes);
 
-  drawCoordSystem(context, CoordSystemColor, 1, cw, ch, xRes, yRes);
+  drawCoordSystem(context, CoordSystemColor, 1, xRes, yRes);
 
   context.fillStyle = IntersectionPointsColor;
   context.beginPath();
 
   for (let point of intersectionPoints) {
     context.beginPath();
-    context.arc(toContextX(point.x, cw, xRes), toContextY(point.y, ch, yRes), IntersectionPointsRadius, 0, 2 * Math.PI);
+    context.arc(toContextX(point.x, xRes), toContextY(point.y, yRes), IntersectionPointsRadius, 0, 2 * Math.PI);
     context.fill();
   }
   
@@ -142,7 +146,7 @@ intersectionForm.onsubmit = function(event) {
   document.getElementById("intersectionPoints").innerHTML = `Intersection points:${[...pointsSet.values()].join("")}`;
 }
 
-function drawFunc(rpn, context, strokeStyle, lineWidth, cw, ch, xRes, yRes) {
+function drawFunc(rpn, context, strokeStyle, lineWidth, xRes, yRes) {
   let lastX = NaN, lastY = NaN, needToMoveTo = true;
 
   context.strokeStyle = strokeStyle;  
@@ -176,7 +180,7 @@ function drawFunc(rpn, context, strokeStyle, lineWidth, cw, ch, xRes, yRes) {
   context.closePath();
 }
 
-function drawCoordSystem(context, strokeStyle, lineWidth, cw, ch, xRes, yRes) {
+function drawCoordSystem(context, strokeStyle, lineWidth, xRes, yRes) {
   context.strokeStyle = strokeStyle;  
   context.fillStyle = strokeStyle;
   context.lineWidth = lineWidth;
@@ -212,10 +216,10 @@ function drawCoordSystem(context, strokeStyle, lineWidth, cw, ch, xRes, yRes) {
   context.closePath();
 }
 
-function toContextX(x, cw, xRes) {
+function toContextX(x, xRes) {
   return x * (cw / 2) / xRes + (cw / 2);
 }
 
-function toContextY(y, ch, yRes) {
+function toContextY(y, yRes) {
   return ch / 2 - y * (ch / 2) / yRes;
 }
