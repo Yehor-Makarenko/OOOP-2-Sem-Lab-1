@@ -33,12 +33,9 @@ drawFuncForm.onsubmit = function(event) {
   const xRes = +drawFuncForm.elements.xRes.value;
   const yRes = +drawFuncForm.elements.yRes.value;  
 
-  drawFunc(rpn, context, FuncColor, FuncWidth, xRes, yRes);
-
-  drawCoordSystem(context, CoordSystemColor, CoordSystemWidth, xRes, yRes);
+  drawFunc(rpn, xRes, yRes);
+  drawCoordSystem(xRes, yRes);
 }
-
-
 
 areaForm.onsubmit = function(event) {
   event.preventDefault();
@@ -56,46 +53,18 @@ areaForm.onsubmit = function(event) {
   const xRes = +areaForm.elements.xRes.value;
   const yRes = +areaForm.elements.yRes.value;
   const lBound = +areaForm.elements.lBound.value;
-  const rBound = +areaForm.elements.rBound.value;
+  const rBound = +areaForm.elements.rBound.value;  
   const contextLBound = Math.floor(lBound * (cw / 2) / xRes + cw / 2);
   const contextRBound = Math.floor(rBound * (cw / 2) / xRes + cw / 2);
 
-  drawFunc(rpn, context, FuncColor, FuncWidth, xRes, yRes);
-  drawArea()
-
-  drawCoordSystem(context, CoordSystemColor, CoordSystemWidth, xRes, yRes);
-}
-
-function drawArea() {
-  let resArea = 0;
-
-  context.fillStyle = AreaColor;
-  context.beginPath();
-  context.moveTo(contextLBound, ch / 2);
-
-  for (let i = contextLBound; i <= contextRBound; i++) {     
-    const x = (i - cw / 2) * xRes / (cw / 2);
-    const y = calcRPN(rpn, x).value;
-    const contextY = toContextY(y, yRes);
-
-    if (!isFinite(y)) {
-      resArea = NaN;
-      break;
-    }
-    
-    resArea += y;
-
-    context.lineTo(i, contextY);
+  drawFunc(rpn, xRes, yRes);
+  const area = getArea(rpn, cw, lBound, rBound);
+  if (!isNaN(area)) {
+    drawArea(rpn, contextLBound, contextRBound, xRes, yRes);
   }  
+  drawCoordSystem(xRes, yRes);
 
-  if (isNaN(resArea)) {
-    console.log("Wrong boundaries");
-  } else {
-    context.lineTo(contextRBound, ch / 2);
-    context.fill();
-  }  
-
-  document.getElementById("resultArea").innerHTML = `Result area: <b>${+(resArea * (rBound - lBound) / (contextRBound - contextLBound)).toFixed(ResultPrecision)}</b>`;
+  document.getElementById("resultArea").innerHTML = `Result area: <b>${area.toFixed(ResultPrecision)}</b>`;
 }
 
 intersectionForm.onsubmit = function(event) {
@@ -123,10 +92,10 @@ intersectionForm.onsubmit = function(event) {
   
   context.beginPath();  
 
-  drawFunc(rpn1, context, FuncColor, 2, xRes, yRes);
-  drawFunc(rpn2, context, FuncColor, 2, xRes, yRes);
+  drawFunc(rpn1, xRes, yRes);
+  drawFunc(rpn2, xRes, yRes);
 
-  drawCoordSystem(context, CoordSystemColor, 1, xRes, yRes);
+  drawCoordSystem(xRes, yRes);
 
   context.fillStyle = IntersectionPointsColor;
   context.beginPath();
@@ -146,17 +115,17 @@ intersectionForm.onsubmit = function(event) {
   document.getElementById("intersectionPoints").innerHTML = `Intersection points:${[...pointsSet.values()].join("")}`;
 }
 
-function drawFunc(rpn, context, strokeStyle, lineWidth, xRes, yRes) {
+function drawFunc(rpn, xRes, yRes) {
   let lastX = NaN, lastY = NaN, needToMoveTo = true;
 
-  context.strokeStyle = strokeStyle;  
-  context.lineWidth = lineWidth;
+  context.strokeStyle = FuncColor;  
+  context.lineWidth = FuncWidth;
   context.beginPath();  
 
   for (let i = 0; i < cw; i++) {     
     const x = (i - cw / 2) * xRes / (cw / 2);
     const y = calcRPN(rpn, x).value;    
-    const contextY = toContextY(y, ch, yRes);
+    const contextY = toContextY(y, yRes);
 
     if (isNaN(y)) continue;
 
@@ -180,10 +149,47 @@ function drawFunc(rpn, context, strokeStyle, lineWidth, xRes, yRes) {
   context.closePath();
 }
 
-function drawCoordSystem(context, strokeStyle, lineWidth, xRes, yRes) {
-  context.strokeStyle = strokeStyle;  
-  context.fillStyle = strokeStyle;
-  context.lineWidth = lineWidth;
+function getArea(rpn, numOfIntervals, lBound, rBound) {
+  let resArea = 0;  
+
+  const deltaX = (rBound - lBound) / numOfIntervals;    
+
+  for (let i = 0; i < numOfIntervals; i++) { 
+    const x = lBound + (i + 0.5) * deltaX;
+    const y = calcRPN(rpn, x).value;
+
+    if (!isFinite(y)) {
+      resArea = NaN;
+      break;
+    }
+
+    resArea += deltaX * y;
+  }
+
+  return resArea;
+}
+
+function drawArea(rpn, contextLBound, contextRBound, xRes, yRes) {
+  context.fillStyle = AreaColor;
+  context.beginPath();
+  context.moveTo(contextLBound, ch / 2);
+
+  for (let i = contextLBound; i <= contextRBound; i++) {     
+    const x = (i - cw / 2) * xRes / (cw / 2);
+    const y = calcRPN(rpn, x).value;
+    const contextY = toContextY(y, yRes);     
+
+    context.lineTo(i, contextY);
+  }  
+
+  context.lineTo(contextRBound, ch / 2);
+  context.fill();  
+}
+
+function drawCoordSystem(xRes, yRes) {
+  context.strokeStyle = FuncColor;  
+  context.fillStyle = FuncColor;
+  context.lineWidth = FuncWidth;
   context.font = "18px Arial";
   context.beginPath();    
 

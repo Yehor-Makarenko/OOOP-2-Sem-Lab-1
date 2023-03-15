@@ -5,15 +5,15 @@ export { getIntersectionPoints, newtonMethod };
 
 // lBound and rBound on x axis
 function getIntersectionPoints(rpn1, rpn2, numOfIntervals, lBound, rBound) {  
-  const diff = rBound - lBound;
+  const deltaX = (rBound - lBound) / numOfIntervals;
   const resultPoints = [];
 
   const resultRPN = Queue.concat(rpn1, rpn2);
   resultRPN.push(OPERATORS["-"]);
 
   for (let i = 0; i < numOfIntervals; i++) {
-    const x1 = lBound + i * diff / numOfIntervals;
-    const x2 = lBound + (i + 1) * diff / numOfIntervals;
+    const x1 = lBound + i * deltaX;
+    const x2 = lBound + (i + 1) * deltaX;
     const y1 = calcRPN(resultRPN, x1).value;
     const y2 = calcRPN(resultRPN, x2).value;    
     let resultX;
