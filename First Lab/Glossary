@@ -1,0 +1,4 @@
+Operator – a symbol indicating a math operation.
+Operand – an object that is operated on by an operator.
+Reverse polish notation – a method for conveying mathematical expressions without the use of separators such as brackets and parentheses.
+Newton's method – a technique for solving equations of the form f(x)=0 by successive approximation. 
