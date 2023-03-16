@@ -21,15 +21,8 @@ drawFuncForm.onsubmit = function(event) {
   event.preventDefault();
   context.clearRect(0, 0, cw, ch);
 
-  const expr = drawFuncForm.elements.userExpr.value.trim();
-  const rpnData = getRPN(expr);
-
-  if (rpnData === null || rpnData[1] < expr.length) {
-    console.log("Invalid input");
-    return;
-  }
-
-  const rpn = rpnData[0];
+  const expr = drawFuncForm.elements.userExpr.value.trim();  
+  const rpn = parseExpressions(expr);
   const xRes = +drawFuncForm.elements.xRes.value;
   const yRes = +drawFuncForm.elements.yRes.value;  
 
@@ -42,26 +35,17 @@ areaForm.onsubmit = function(event) {
   context.clearRect(0, 0, cw, ch);
   
   const expr = areaForm.elements.userExpr.value.trim();
-  const rpnData = getRPN(expr);
-
-  if (rpnData === null || rpnData[1] < expr.length) {
-    console.log("Invalid input");
-    return;
-  }
-
-  const rpn = rpnData[0];
+  const rpn = parseExpressions(expr);
   const xRes = +areaForm.elements.xRes.value;
   const yRes = +areaForm.elements.yRes.value;
   const lBound = +areaForm.elements.lBound.value;
   const rBound = +areaForm.elements.rBound.value;  
-  const contextLBound = Math.floor(lBound * (cw / 2) / xRes + cw / 2);
-  const contextRBound = Math.floor(rBound * (cw / 2) / xRes + cw / 2);
-
-  drawFunc(rpn, xRes, yRes);
   const area = getArea(rpn, cw, lBound, rBound);
+
   if (!isNaN(area)) {
-    drawArea(rpn, contextLBound, contextRBound, xRes, yRes);
+    drawArea(rpn, lBound, rBound, xRes, yRes);
   }  
+  drawFunc(rpn, xRes, yRes);
   drawCoordSystem(xRes, yRes);
 
   document.getElementById("resultArea").innerHTML = `Result area: <b>${area.toFixed(ResultPrecision)}</b>`;
@@ -73,17 +57,7 @@ intersectionForm.onsubmit = function(event) {
 
   const expr1 = intersectionForm.elements.userExpr1.value.trim();
   const expr2 = intersectionForm.elements.userExpr2.value.trim();  
-  const rpnData1 = getRPN(expr1);
-  const rpnData2 = getRPN(expr2);
-
-  if (rpnData1 === null || rpnData1[1] < expr1.length
-    || rpnData2 === null || rpnData2[1] < expr2.length) {
-    console.log("Invalid input");
-    return;
-  }
-
-  const rpn1 = rpnData1[0];
-  const rpn2 = rpnData2[0];
+  const [rpn1, rpn2] = parseExpressions(expr1, expr2);
   const xRes = +intersectionForm.elements.xRes.value;
   const yRes = +intersectionForm.elements.yRes.value;
   const lBound = +intersectionForm.elements.lBound.value;
@@ -94,17 +68,8 @@ intersectionForm.onsubmit = function(event) {
 
   drawFunc(rpn1, xRes, yRes);
   drawFunc(rpn2, xRes, yRes);
-
   drawCoordSystem(xRes, yRes);
-
-  context.fillStyle = IntersectionPointsColor;
-  context.beginPath();
-
-  for (let point of intersectionPoints) {
-    context.beginPath();
-    context.arc(toContextX(point.x, xRes), toContextY(point.y, yRes), IntersectionPointsRadius, 0, 2 * Math.PI);
-    context.fill();
-  }
+  drawPoints(intersectionPoints, xRes, yRes);
   
   let pointsSet = new Set();
 
@@ -149,6 +114,21 @@ function drawFunc(rpn, xRes, yRes) {
   context.closePath();
 }
 
+function parseExpressions(...exprs) {
+  const rpnData = exprs.map(expr => getRPN(expr));
+
+  for (let i = 0; i < rpnData.length; i++) {
+    if (rpnData[i] === null || rpnData[i][1] < exprs[i].length) {
+      throw new Error("Invalid Input");
+    }
+  }
+
+  if (rpnData.length > 1) {
+    return rpnData.map(data => data[0]);
+  }
+  return rpnData[0][0];
+}
+
 function getArea(rpn, numOfIntervals, lBound, rBound) {
   let resArea = 0;  
 
@@ -169,7 +149,10 @@ function getArea(rpn, numOfIntervals, lBound, rBound) {
   return resArea;
 }
 
-function drawArea(rpn, contextLBound, contextRBound, xRes, yRes) {
+function drawArea(rpn, lBound, rBound, xRes, yRes) {
+  const contextLBound = toContextX(lBound, xRes);
+  const contextRBound = toContextX(rBound, xRes);
+
   context.fillStyle = AreaColor;
   context.beginPath();
   context.moveTo(contextLBound, ch / 2);
@@ -186,10 +169,21 @@ function drawArea(rpn, contextLBound, contextRBound, xRes, yRes) {
   context.fill();  
 }
 
+function drawPoints(intersectionPoints, xRes, yRes) {
+  context.fillStyle = IntersectionPointsColor;
+  context.beginPath();
+
+  for (let point of intersectionPoints) {
+    context.beginPath();
+    context.arc(toContextX(point.x, xRes), toContextY(point.y, yRes), IntersectionPointsRadius, 0, 2 * Math.PI);
+    context.fill();
+  }
+}
+
 function drawCoordSystem(xRes, yRes) {
-  context.strokeStyle = FuncColor;  
-  context.fillStyle = FuncColor;
-  context.lineWidth = FuncWidth;
+  context.strokeStyle = CoordSystemColor;  
+  context.fillStyle = CoordSystemColor;
+  context.lineWidth = CoordSystemWidth;
   context.font = "18px Arial";
   context.beginPath();    
 
@@ -223,9 +217,9 @@ function drawCoordSystem(xRes, yRes) {
 }
 
 function toContextX(x, xRes) {
-  return x * (cw / 2) / xRes + (cw / 2);
+  return Math.round(x * (cw / 2) / xRes + cw / 2);
 }
 
 function toContextY(y, yRes) {
-  return ch / 2 - y * (ch / 2) / yRes;
+  return Math.round(ch / 2 - y * (ch / 2) / yRes);
 }
