@@ -1,5 +1,6 @@
 import Stack from "./classes/Stack.js";
 import Queue from "./classes/Queue.js";
+import Operand from "./classes/Operand.js";
 export { calcRPN, getRPN, getOperand, getOperator, OPERATORS };
 
 const OPERATORS = {
@@ -210,10 +211,7 @@ function getRPN(expr, startPos = 0, variable = "x") {
 
 function getOperand(expr, startPos = 0, variable = "x") {
   let currPos = startPos;  
-  const operand = {
-    type: null,
-    value: null
-  }
+  let operand;
 
   while (expr[currPos] === " ") {
     currPos++;
@@ -226,110 +224,128 @@ function getOperand(expr, startPos = 0, variable = "x") {
     return [operand, currPos + 1];
   }
 
-  if (expr[currPos] === "e") {
-    operand.type = "NUM";
-    operand.value = Math.E;
+  let num;
+  [num, currPos] = parseNumber(expr, currPos);
 
-    return [operand, currPos + 1];
-  }
-
-  if (expr[currPos] === "p") {
-    currPos++;
-
-    if (currPos >= expr.length || expr[currPos] !== "i") return null;
-
-    operand.type = "NUM";
-    operand.value = Math.PI;
-
-    return [operand, currPos + 1];
-  }
-
-  if (isDigit(expr[currPos])) {
-    let num = "";
-
-    while (isDigit(expr[currPos])) {
-      num += expr[currPos];
-      currPos++;
-
-      if (currPos >= expr.length) break;
-    }
-
-    if (currPos < expr.length && expr[currPos] === ".") {
-      num += ".";
-      currPos++;
-
-      if (currPos >= expr.length || !isDigit(expr[currPos])) return null;
-
-      while (isDigit(expr[currPos])) {
-        num += expr[currPos];
-        currPos++;
-  
-        if (currPos >= expr.length) break;
-      }
-    }
-
-    operand.type = "NUM";
-    operand.value = +num;    
-
+  if (num !== null) {
+    operand = new Operand("NUM", num);
     return [operand, currPos];
   }
 
   const exprPart = expr.slice(currPos);
 
-  if (exprPart.startsWith("ln(") || exprPart.startsWith("lg(") || exprPart.startsWith("sin(") || exprPart.startsWith("cos(") 
-    || exprPart.startsWith("tan(") || exprPart.startsWith("cot(") || exprPart.startsWith("arcsin(") || exprPart.startsWith("arccos(") 
-    || exprPart.startsWith("arctan(") || exprPart.startsWith("arccot(")) {
-    let type = "";
+  for (let func of ["ln", "lg", "sin", "cos", "tan", "cot", "arcsin", "arccos", "arctan", "arccot"]) {
+    if (!exprPart.startsWith(func)) continue;
 
-    while(expr[currPos] !== "(") {
-      type += expr[currPos];
-      currPos++;
+    let arg;
+    [arg, currPos] = parseFunctionArguments(expr, currPos + func.length);
+    operand = new Operand(type, arg);
+
+    return [operand, currPos];
+  }
+
+  if (exprPart.startsWith("log")) {
+    let logBase, logArg;
+    [logBase, logArg, currPos] = parseFunctionArguments(expr, currPos + 3, 2);            
+    operand = new Operand("log", { logBase, logArg });
+    
+    return [operand, currPos];
+  }
+
+  throw new Error("Can't parse expression");
+}
+
+function parseFunctionArguments(expr, currPos, numOfArgs = 1) {  
+  if (expr[currPos] !== "(") {
+    throw new Error("Can't parse expression");
+  }
+
+  const args = [];
+
+  for (let i = 0; i < numOfArgs; i++) {
+    let arg;
+    [arg, currPos] = getSubRPN(expr, currPos + 1);
+
+    if (i === numOfArgs - 1) break;
+
+    if (expr[currPos] !== ",") {
+      throw new Error("Can't parse expression");
     }
 
-    const argData = getRPN(expr, currPos + 1);
-
-    if (argData === null) return null;
-
-    currPos = argData[1];
-
-    if (currPos >= expr.length) return null;
-
-    if (expr[currPos] !== ")") return null;
-
-    operand.type = type;
-    operand.value = argData[0];
-    
-    return [operand, currPos + 1];
+    args.push(arg);
   }
 
-  if (exprPart.startsWith("log(")) {
-    const logBaseData = getRPN(expr, currPos + 4);
-
-    if (logBaseData === null) return null;
-
-    currPos = logBaseData[1];
-
-    if (currPos >= expr.length) return null;
-
-    if (expr[currPos] !== ",") return null;
-
-    const logArgData = getRPN(expr, currPos + 1);
-
-    if (logArgData === null) return null;
-
-    currPos = logArgData[1];
-
-    if (currPos >= expr.length) return null;
-
-    if (expr[currPos] !== ")") return null;
-
-    operand.type = "log";
-    operand.value = [logBaseData[0], logArgData[0]];
-    
-    return [operand, currPos + 1];
+  if (expr[currPos] !== ")") {
+    throw new Error("Can't parse expression");
   }
 
-  return null;
+  return [...args, currPos];
+}
+
+function parseNUMOperand(expr, currPos) {
+  if (expr[currPos] === "e") {    
+    return [Math.E, currPos + 1];
+  }
+
+  if (expr[currPos] === "p") {    
+    if (expr[currPos + 1] !== "i") {
+      throw new Error("Can't parse expression");
+    }
+
+    return [Math.PI, currPos + 2];
+  }
+
+  if (isDigit(expr[currPos])) {    
+    return parseNumber(expr, currPos);    
+  }
+
+  return [null, currPos];
+}
+
+function parseNumber(expr, currPos) {
+  let num1, num2;
+  [num1, currPos] = parseInt(expr, currPos);
+
+  if(expr[currPos] !== ".") {
+    return [+num, currPos];
+  }
+  
+  currPos++;
+
+  if (currPos >= expr.length || !isDigit(expr[currPos])) {
+    throw new Error("Can't parse expression");
+  }
+
+  [num2, currPos] = parseInt(expr, currPos);
+
+  return [+`${num1}.${num2}`, currPos];
+}
+
+function parseInt(expr, currPos) {
+  let num = "";
+
+  while (isDigit(expr[currPos])) {
+    num += expr[currPos];
+    currPos++;
+
+    if (currPos >= expr.length) break;
+  }
+
+  return [+num, currPos];
+}
+
+function getSubRPN(expr, currPos) {
+  if (currPos >= expr.length) {
+    throw new Error("Can't parse expression");
+  }
+
+  const subfunction = getRPN(expr, currPos);
+
+  if (subfunction[0] === null || subfunction[1] >= expr.length) {
+    throw new Error("Can't parse expression");
+  }
+
+  return subfunction;
 }
 
 function getOperator(expr, startPos = 0) {
@@ -347,7 +363,8 @@ function getOperator(expr, startPos = 0) {
   if (char in OPERATORS) {    
     return [OPERATORS[char], currPos + 1];
   }
-  return null;
+  
+  throw new Error("Can't parse expression");
 }
 
 function isDigit(char) {
