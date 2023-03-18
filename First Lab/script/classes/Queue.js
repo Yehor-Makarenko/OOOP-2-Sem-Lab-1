@@ -39,15 +39,15 @@ export default class Queue {
   }
 
   static copy(queue) {
-    const copy = new Queue();
+    const queueCopy = new Queue();
     let currItem = queue.head;
   
     while (currItem !== null) {
-      copy.push(currItem.value);
+      queueCopy.push(currItem.value);
       currItem = currItem.next;
     }
 
-    return copy;
+    return queueCopy;
   }
 
   static concat(...queues) {
@@ -55,7 +55,8 @@ export default class Queue {
     let currItem;
 
     for (let queue of queues) {
-      currItem = queue.head;
+      const queueCopy = Queue.copy(queue);
+      currItem = queueCopy.head;
 
       while (currItem !== null) {
         resultQueue.push(currItem.value);
