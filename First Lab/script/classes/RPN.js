@@ -1,6 +1,7 @@
 import Queue from "./Queue.js";
 import Stack from "./Stack.js";
 import Operand from "./classes/Operand.js";
+import Point from "./Point.js";
 
 const OPERATORS = {
   ",": {type: ",", priority: 0},
@@ -27,10 +28,70 @@ export default class RPN {
     this.rpnExpr = rpnExpr;
   }
 
-  calcRPN(varValue) {
+  getValueInPoint(varValue) {    
+    return _calcRPNExpression(this.rpnExpr, varValue).value;
+  }
+
+  static getIntersectionPoints(rpn1, rpn2, lBound, rBound, numOfIntervals = 1000) {  
+    const deltaX = (rBound - lBound) / numOfIntervals;
+    const resultPoints = [];
+  
+    const resultRPN = RPN.merge(rpn1, rpn2, "-");    
+  
+    for (let i = 0; i < numOfIntervals; i++) {
+      const x1 = lBound + i * deltaX;
+      const x2 = lBound + (i + 1) * deltaX;
+      const y1 = resultRPN.getValueInPoint(x1);
+      const y2 = resultRPN.getValueInPoint(x2);    
+      let resultX;
+  
+      if (y1 === 0) {
+        resultPoints.push(new Point(x1, rpn1.getValueInPoint(x1)));
+        continue;
+      } else if (y2 === 0) {
+        if (i === numOfIntervals - 1) resultPoints.push(new Point(x2, rpn1.getValueInPoint(x2)));
+        continue;
+      }
+      
+      if (!isFinite(y1) || !isFinite(y2)) continue;
+  
+      if (y1 * y2 > 0) continue;
+  
+      resultX = newtonMethod(resultRPN, x1 + 0.00001, 0.00001);
+      resultPoints.push(new Point(resultX, rpn1.getValueInPoint(resultX)));
+    }
+  
+    return resultPoints;
+  }
+
+  static merge(rpn1, rpn2, operatorChar) {
+    const operator = _getOperator(operatorChar)[0];
+
+    if (operatorChar.length > 1 || operator === null) {
+      throw new Error("Can't merge rpns");
+    }
+
+    const mergedRPNExpression = Queue.concat(rpn1.rpnExpr, rpn2.rpnExpr);
+    mergedRPNExpression.push(operator);
+    const mergedRPN = new RPN("");
+    mergedRPN.expr = rpn1.expr + operatorChar + rpn2.expr;
+    mergedRPN.rpnExpr = mergedRPNExpression;
+
+    return mergedRPN;
+  }
+
+  static copy(rpn) {
+    const rpnCopy = new RPN("");
+    rpnCopy.rpnExpr = Queue.copy(rpn.rpnExpr);
+    rpnCopy.expr = rpn.expr;
+
+    return rpnCopy;
+  }
+
+  _calcRPNExpression(rpnExpr, varValue) {
     const result = new Stack();
-    const rpnCopy = Queue.copy(this.rpnExpr);
-    let currItem = rpnCopy.shift();
+    const rpnExprCopy = Queue.copy(rpnExpr);
+    let currItem = rpnExprCopy.shift();
     let base, arg, fItem, sItem;
   
     while (currItem !== null) {
@@ -42,54 +103,54 @@ export default class RPN {
           result.push({value: varValue, isVar: true});
           break;
         case "ln":
-          arg = calcRPN(currItem.value, varValue);
+          arg = _calcRPNExpression(currItem.value, varValue);
   
           if (arg.value <= 0) return NaN;
   
           result.push({value: Math.log(arg.value), isVar: arg.isVar});
           break;
         case "lg":
-          arg = calcRPN(currItem.value, varValue);
+          arg = _calcRPNExpression(currItem.value, varValue);
   
           if (arg.value <= 0) return NaN;
   
           result.push({value: Math.log10(arg.value), isVar: arg.isVar});
           break;
         case "sin":
-          arg = calcRPN(currItem.value, varValue);       
+          arg = _calcRPNExpression(currItem.value, varValue);       
           result.push({value: Math.sin(arg.value), isVar: arg.isVar});
           break;
         case "cos":
-          arg = calcRPN(currItem.value, varValue);       
+          arg = _calcRPNExpression(currItem.value, varValue);       
           result.push({value: Math.cos(arg.value), isVar: arg.isVar});
           break;
         case "tan":
-          arg = calcRPN(currItem.value, varValue);       
+          arg = _calcRPNExpression(currItem.value, varValue);       
           result.push({value: Math.tan(arg.value), isVar: arg.isVar});
           break;
         case "cot":
-          arg = calcRPN(currItem.value, varValue);       
+          arg = _calcRPNExpression(currItem.value, varValue);       
           result.push({value: 1 / Math.tan(arg.value), isVar: arg.isVar});
           break;
         case "arcsin":
-          arg = calcRPN(currItem.value, varValue);       
+          arg = _calcRPNExpression(currItem.value, varValue);       
           result.push({value: Math.asin(arg.value), isVar: arg.isVar});
           break;
         case "arccos":
-          arg = calcRPN(currItem.value, varValue);       
+          arg = _calcRPNExpression(currItem.value, varValue);       
           result.push({value: Math.acos(arg.value), isVar: arg.isVar});
           break;
         case "arctan":
-          arg = calcRPN(currItem.value, varValue);       
+          arg = _calcRPNExpression(currItem.value, varValue);       
           result.push({value: Math.atan(arg.value), isVar: arg.isVar});
           break;
         case "arccot":
-          arg = calcRPN(currItem.value, varValue);       
+          arg = _calcRPNExpression(currItem.value, varValue);       
           result.push({value: Math.PI / 2 - Math.atan(arg.value), isVar: arg.isVar});
           break;
         case "log":
-          base = calcRPN(currItem.value[0], varValue);
-          arg = calcRPN(currItem.value[1], varValue);
+          base = _calcRPNExpression(currItem.value[0], varValue);
+          arg = _calcRPNExpression(currItem.value[1], varValue);
   
           if (base.value <= 0 || base.value === 1 || arg.value <= 0) return NaN;
   
@@ -216,6 +277,18 @@ export default class RPN {
     }
   
     return [result, currPos];
+  }
+
+  _newtonMethod(rpn, firstX, accuracy) {    
+    let currX = firstX;
+    let prevX = currX + accuracy + 1;
+  
+    while (Math.abs(currX - prevX) > accuracy) {          
+      const derivative = (rpn.getValueInPoint(currX + accuracy) - rpn.getValueInPoint(currX - accuracy)) / (2 * accuracy);
+      [currX, prevX] = [currX - rpn.getValueInPoint(currX) / derivative, currX];    
+    }
+  
+    return currX;
   }
 
   _getOperand(expr, startPos = 0, variable = "x") {
