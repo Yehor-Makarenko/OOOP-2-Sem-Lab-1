@@ -5,6 +5,7 @@ import Queue from "./Queue.js";
 
 export default class ImplicitRPN extends RPN {
   constructor (expr1 = "0", expr2 = "0", var1 = "x", var2 = "y") {
+    [expr1, expr2] = [expr1.trim(), expr2.trim()];
     super(`(${expr1})-(${expr2})`, var1, var2);
   }
 

@@ -1,4 +1,5 @@
-import RPN from "./classes/RPN.js";
+import OneVariableRPN from "./classes/OneVariableRPN.js";
+import ImplicitRPN from "./classes/ImplicitRPN.js";
 
 const canvas = document.getElementById("tutorial");
 const context = canvas.getContext("2d");
@@ -7,6 +8,7 @@ const ch = canvas.height = 800;
 const drawFuncForm = document.getElementById("drawFuncForm");
 const areaForm = document.getElementById("areaForm");
 const intersectionForm = document.getElementById("intersectionForm");
+const drawImplicitFuncForm = document.getElementById("drawImplicitFuncForm");
 const FuncColor = "blue";
 const FuncWidth = 2;
 const AreaColor = "red";
@@ -16,11 +18,25 @@ const CoordSystemColor = "black";
 const CoordSystemWidth = 1;
 const ResultPrecision = 5;  
 
+drawImplicitFuncForm.onsubmit = function(event) {
+  event.preventDefault();
+  context.clearRect(0, 0, cw, ch);
+
+  const expr1 = drawImplicitFuncForm.elements.userExpr1.value;  
+  const expr2 = drawImplicitFuncForm.elements.userExpr2.value;  
+  const rpn = new ImplicitRPN(expr1, expr2);
+  const xRes = +drawImplicitFuncForm.elements.xRes.value;
+  const yRes = +drawImplicitFuncForm.elements.yRes.value;    
+
+  drawImplicitFunc(rpn, xRes, yRes);
+  drawCoordSystem(xRes, yRes)
+}
+
 drawFuncForm.onsubmit = function(event) {
   event.preventDefault();
   context.clearRect(0, 0, cw, ch);
 
-  const expr = drawFuncForm.elements.userExpr.value.trim();  
+  const expr = drawFuncForm.elements.userExpr.value;  
   const rpn = parseExpressions(expr);
   const xRes = +drawFuncForm.elements.xRes.value;
   const yRes = +drawFuncForm.elements.yRes.value;  
@@ -33,7 +49,7 @@ areaForm.onsubmit = function(event) {
   event.preventDefault();
   context.clearRect(0, 0, cw, ch);
   
-  const expr = areaForm.elements.userExpr.value.trim();
+  const expr = areaForm.elements.userExpr.value;
   const rpn = parseExpressions(expr);
   const xRes = +areaForm.elements.xRes.value;
   const yRes = +areaForm.elements.yRes.value;
@@ -54,14 +70,14 @@ intersectionForm.onsubmit = function(event) {
   event.preventDefault();
   context.clearRect(0, 0, cw, ch);
 
-  const expr1 = intersectionForm.elements.userExpr1.value.trim();
-  const expr2 = intersectionForm.elements.userExpr2.value.trim();  
+  const expr1 = intersectionForm.elements.userExpr1.value;
+  const expr2 = intersectionForm.elements.userExpr2.value;  
   const [rpn1, rpn2] = parseExpressions(expr1, expr2);
   const xRes = +intersectionForm.elements.xRes.value;
   const yRes = +intersectionForm.elements.yRes.value;
   const lBound = +intersectionForm.elements.lBound.value;
   const rBound = +intersectionForm.elements.rBound.value;
-  const intersectionPoints = RPN.getIntersectionPoints(rpn1, rpn2, lBound, rBound, cw);
+  const intersectionPoints = OneVariableRPN.getIntersectionPoints(rpn1, rpn2, lBound, rBound, cw);
   
   context.beginPath();  
 
@@ -113,8 +129,26 @@ function drawFunc(rpn, xRes, yRes) {
   context.closePath();
 }
 
+function drawImplicitFunc(rpn, xRes, yRes) {  
+  context.fillStyle = FuncColor;    
+  context.beginPath();  
+
+  for (let i = 0; i < cw; i++) {     
+    const x = (i - cw / 2) * xRes / (cw / 2);
+    const yPoints = rpn.getValuesInPoint(x, yRes, -yRes);    
+
+    for (let y of yPoints) {
+      context.beginPath();
+      context.arc(i, toContextY(y, yRes), FuncWidth / 2, 0, 2 * Math.PI);
+      context.fill();
+    }
+  }  
+
+  context.closePath();
+}
+
 function parseExpressions(...exprs) {
-  const rpns = exprs.map(expr => new RPN(expr));
+  const rpns = exprs.map(expr => new OneVariableRPN(expr));
 
   if (rpns.length > 1) {
     return rpns;
