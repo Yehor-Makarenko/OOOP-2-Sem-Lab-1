@@ -1,5 +1,4 @@
-import { calcRPN, getRPN } from "./ReversePolishNotation.js";
-import { getIntersectionPoints } from "./Intersection.js";
+import RPN from "./classes/RPN.js";
 
 const canvas = document.getElementById("tutorial");
 const context = canvas.getContext("2d");
@@ -62,7 +61,7 @@ intersectionForm.onsubmit = function(event) {
   const yRes = +intersectionForm.elements.yRes.value;
   const lBound = +intersectionForm.elements.lBound.value;
   const rBound = +intersectionForm.elements.rBound.value;
-  const intersectionPoints = getIntersectionPoints(rpn1, rpn2, cw, lBound, rBound);
+  const intersectionPoints = RPN.getIntersectionPoints(rpn1, rpn2, lBound, rBound, cw);
   
   context.beginPath();  
 
@@ -89,7 +88,7 @@ function drawFunc(rpn, xRes, yRes) {
 
   for (let i = 0; i < cw; i++) {     
     const x = (i - cw / 2) * xRes / (cw / 2);
-    const y = calcRPN(rpn, x).value;    
+    const y = rpn.getValueInPoint(x);    
     const contextY = toContextY(y, yRes);
 
     if (isNaN(y)) continue;
@@ -115,18 +114,12 @@ function drawFunc(rpn, xRes, yRes) {
 }
 
 function parseExpressions(...exprs) {
-  const rpnData = exprs.map(expr => getRPN(expr));
+  const rpns = exprs.map(expr => new RPN(expr));
 
-  for (let i = 0; i < rpnData.length; i++) {
-    if (rpnData[i] === null || rpnData[i][1] < exprs[i].length) {
-      throw new Error("Invalid Input");
-    }
+  if (rpns.length > 1) {
+    return rpns;
   }
-
-  if (rpnData.length > 1) {
-    return rpnData.map(data => data[0]);
-  }
-  return rpnData[0][0];
+  return rpns[0];
 }
 
 function getArea(rpn, numOfIntervals, lBound, rBound) {
@@ -136,7 +129,7 @@ function getArea(rpn, numOfIntervals, lBound, rBound) {
 
   for (let i = 0; i < numOfIntervals; i++) { 
     const x = lBound + (i + 0.5) * deltaX;
-    const y = calcRPN(rpn, x).value;
+    const y = rpn.getValueInPoint(x);
 
     if (!isFinite(y)) {
       resArea = NaN;
@@ -159,7 +152,7 @@ function drawArea(rpn, lBound, rBound, xRes, yRes) {
 
   for (let i = contextLBound; i <= contextRBound; i++) {     
     const x = (i - cw / 2) * xRes / (cw / 2);
-    const y = calcRPN(rpn, x).value;
+    const y = rpn.getValueInPoint(x);
     const contextY = toContextY(y, yRes);     
 
     context.lineTo(i, contextY);
