@@ -1,24 +1,11 @@
 import Queue from "./Queue.js";
 import Stack from "./Stack.js";
 import Operand from "./Operand.js";
-import Point from "./Point.js";
-
-const OPERATORS = {
-  ",": {type: ",", priority: 0},
-  "(": {type: "(", priority: 0},
-  ")": {type: ")", priority: 0},
-  "+": {type: "+", priority: 1},
-  "-": {type: "-", priority: 1},
-  "*": {type: "*", priority: 2},
-  "/": {type: "/", priority: 2},
-  "u-": {type: "u-", priority: 3},
-  "^": {type: "^", priority: 4},
-};
 
 export default class RPN {
-  constructor(expr, variable = "x") {
+  constructor(expr = "", ...variables) {
     expr = expr.trim();
-    const [rpnExpr, lastPos] = this._getRPNExpression(expr, 0, variable);
+    const [rpnExpr, lastPos] = this._getRPNExpression(expr, 0, variables);
 
     if (rpnExpr === null || lastPos < expr.length) {
       throw new Error("Can't parse expression");
@@ -26,42 +13,6 @@ export default class RPN {
 
     this.expr = expr;
     this.rpnExpr = rpnExpr;
-  }
-
-  getValueInPoint(varValue) {    
-    return this._calcRPNExpression(this.rpnExpr, varValue).value;
-  }
-
-  static getIntersectionPoints(rpn1, rpn2, lBound, rBound, numOfIntervals = 1000) {  
-    const deltaX = (rBound - lBound) / numOfIntervals;
-    const resultPoints = [];
-  
-    const resultRPN = RPN.merge(rpn1, rpn2, "-");    
-  
-    for (let i = 0; i < numOfIntervals; i++) {
-      const x1 = lBound + i * deltaX;
-      const x2 = lBound + (i + 1) * deltaX;
-      const y1 = resultRPN.getValueInPoint(x1);
-      const y2 = resultRPN.getValueInPoint(x2);    
-      let resultX;
-  
-      if (y1 === 0) {
-        resultPoints.push(new Point(x1, rpn1.getValueInPoint(x1)));
-        continue;
-      } else if (y2 === 0) {
-        if (i === numOfIntervals - 1) resultPoints.push(new Point(x2, rpn1.getValueInPoint(x2)));
-        continue;
-      }
-      
-      if (!isFinite(y1) || !isFinite(y2)) continue;
-  
-      if (y1 * y2 > 0) continue;
-  
-      resultX = rpn1._newtonMethod(resultRPN, x1 + 0.00001, 0.00001);
-      resultPoints.push(new Point(resultX, rpn1.getValueInPoint(resultX)));
-    }
-  
-    return resultPoints;
   }
 
   static merge(rpn1, rpn2, operatorChar) {
@@ -73,7 +24,7 @@ export default class RPN {
 
     const mergedRPNExpression = Queue.concat(rpn1.rpnExpr, rpn2.rpnExpr);
     mergedRPNExpression.push(operator);
-    const mergedRPN = new RPN("");
+    const mergedRPN = new rpn1.constructor();
     mergedRPN.expr = rpn1.expr + operatorChar + rpn2.expr;
     mergedRPN.rpnExpr = mergedRPNExpression;
 
@@ -81,122 +32,26 @@ export default class RPN {
   }
 
   static copy(rpn) {
-    const rpnExprCopy = new RPN("");
+    const rpnExprCopy = new this();
     rpnExprCopy.rpnExpr = Queue.copy(rpn.rpnExpr);
     rpnExprCopy.expr = rpn.expr;
 
     return rpnExprCopy;
   }
 
-  _calcRPNExpression(rpnExpr, varValue) {
-    const result = new Stack();
-    const rpnExprCopy = Queue.copy(rpnExpr);
-    let currItem = rpnExprCopy.shift();
-    let base, arg, fItem, sItem;
-  
-    while (currItem !== null) {
-      switch (currItem.type) {
-        case "NUM":
-          result.push({value: currItem.value, isVar: false});
-          break;
-        case "VAR":
-          result.push({value: varValue, isVar: true});
-          break;
-        case "ln":
-          arg = this._calcRPNExpression(currItem.value, varValue);
-  
-          if (arg.value <= 0) return NaN;
-  
-          result.push({value: Math.log(arg.value), isVar: arg.isVar});
-          break;
-        case "lg":
-          arg = this._calcRPNExpression(currItem.value, varValue);
-  
-          if (arg.value <= 0) return NaN;
-  
-          result.push({value: Math.log10(arg.value), isVar: arg.isVar});
-          break;
-        case "sin":
-          arg = this._calcRPNExpression(currItem.value, varValue);       
-          result.push({value: Math.sin(arg.value), isVar: arg.isVar});
-          break;
-        case "cos":
-          arg = this._calcRPNExpression(currItem.value, varValue);       
-          result.push({value: Math.cos(arg.value), isVar: arg.isVar});
-          break;
-        case "tan":
-          arg = this._calcRPNExpression(currItem.value, varValue);       
-          result.push({value: Math.tan(arg.value), isVar: arg.isVar});
-          break;
-        case "cot":
-          arg = this._calcRPNExpression(currItem.value, varValue);       
-          result.push({value: 1 / Math.tan(arg.value), isVar: arg.isVar});
-          break;
-        case "arcsin":
-          arg = this._calcRPNExpression(currItem.value, varValue);       
-          result.push({value: Math.asin(arg.value), isVar: arg.isVar});
-          break;
-        case "arccos":
-          arg = this._calcRPNExpression(currItem.value, varValue);       
-          result.push({value: Math.acos(arg.value), isVar: arg.isVar});
-          break;
-        case "arctan":
-          arg = this._calcRPNExpression(currItem.value, varValue);       
-          result.push({value: Math.atan(arg.value), isVar: arg.isVar});
-          break;
-        case "arccot":
-          arg = this._calcRPNExpression(currItem.value, varValue);       
-          result.push({value: Math.PI / 2 - Math.atan(arg.value), isVar: arg.isVar});
-          break;
-        case "log":
-          base = this._calcRPNExpression(currItem.value.logBase, varValue);
-          arg = this._calcRPNExpression(currItem.value.logArg, varValue);
-  
-          if (base.value <= 0 || base.value === 1 || arg.value <= 0) return NaN;
-  
-          result.push({value: Math.log(arg.value) / Math.log(base.value), isVar: arg.isVar || base.isVar});
-          break;
-        case "u-":
-          fItem = result.pop();
-          result.push({value: -fItem.value, isVar: fItem.isVar});
-          break;
-        case "+":
-          fItem = result.pop();
-          sItem = result.pop();
-          result.push({value: fItem.value + sItem.value, isVar: fItem.isVar || sItem.isVar});
-          break;
-        case "-":
-          fItem = result.pop();
-          sItem = result.pop();
-          result.push({value: sItem.value - fItem.value, isVar: fItem.isVar || sItem.isVar});
-          break;
-        case "*":        
-          fItem = result.pop();
-          sItem = result.pop();
-          result.push({value: fItem.value * sItem.value, isVar: fItem.isVar || sItem.isVar});
-          break;
-        case "/":
-          fItem = result.pop();
-          sItem = result.pop();
-          result.push({value: sItem.value / fItem.value, isVar: fItem.isVar || sItem.isVar});
-          break;
-        case "^":
-          fItem = result.pop();
-          sItem = result.pop();        
-                  
-          if (sItem.value < 0 && fItem.isVar) return NaN;
-  
-          result.push({value: Math.pow(sItem.value, fItem.value), isVar: fItem.isVar || sItem.isVar});
-          break;
-      }
-  
-      currItem = rpnExprCopy.shift();
-    }
-  
-    return result.pop();
-  }
+  static OPERATORS = {
+    ",": {type: ",", priority: 0},
+    "(": {type: "(", priority: 0},
+    ")": {type: ")", priority: 0},
+    "+": {type: "+", priority: 1},
+    "-": {type: "-", priority: 1},
+    "*": {type: "*", priority: 2},
+    "/": {type: "/", priority: 2},
+    "u-": {type: "u-", priority: 3},
+    "^": {type: "^", priority: 4},
+  };
 
-  _getRPNExpression(expr, startPos = 0, variable = "x") {    
+  _getRPNExpression(expr, startPos = 0, variables) {    
     const result = new Queue();
     const operators = new Stack();
     let currPos = startPos;
@@ -209,7 +64,7 @@ export default class RPN {
   
     while (currPos < expr.length) {        
       if (!isLastOperand) {
-        [operand, currPos] = this._getOperand(expr, currPos, variable);
+        [operand, currPos] = this._getOperand(expr, currPos, variables);
         if (operand !== null) {
           result.push(operand);          
           isUnaryMinus = false;
@@ -219,18 +74,17 @@ export default class RPN {
     
         [operator, currPos] = this._getOperator(expr, currPos);
     
-        if (operator.type !== "(" && operator.type !== "-") return [null, currPos];
+        if (operator === null || operator.type !== "(" && operator.type !== "-") return [null, currPos];
   
         if (operator.type === "-") {
           if (isUnaryMinus || expr[currPos] === " ") return [null, currPos];        
           
           isUnaryMinus = true;          
-          operators.push(OPERATORS["u-"]);   
+          operators.push(RPN.OPERATORS["u-"]);   
           continue;     
         }
     
-        operators.push(operator[0]);
-        currPos = operator[1];
+        operators.push(operator);        
         parsCounter++;
         isUnaryMinus = false;
   
@@ -281,31 +135,13 @@ export default class RPN {
     return [result, currPos];
   }
 
-  _newtonMethod(rpn, firstX, accuracy) {    
-    let currX = firstX;
-    let prevX = currX + accuracy + 1;
-  
-    while (Math.abs(currX - prevX) > accuracy) {          
-      const derivative = (rpn.getValueInPoint(currX + accuracy) - rpn.getValueInPoint(currX - accuracy)) / (2 * accuracy);
-      [currX, prevX] = [currX - rpn.getValueInPoint(currX) / derivative, currX];    
-    }
-  
-    return currX;
-  }
-
-  _getOperand(expr, startPos = 0, variable = "x") {
+  _getOperand(expr, startPos = 0, variables) {
     let currPos = startPos;  
     let operand;
   
     while (expr[currPos] === " ") {
       currPos++;
       if (currPos >= expr.length) return [null, currPos];
-    }
-  
-    if (expr[currPos] === variable) {
-      operand = new Operand("VAR");
-      
-      return [operand, currPos + 1];
     }
   
     let num;
@@ -318,11 +154,11 @@ export default class RPN {
   
     const exprPart = expr.slice(currPos);
   
-    for (let func of ["ln", "lg", "sin", "cos", "tan", "cot", "arcsin", "arccos", "arctan", "arccot"]) {
+    for (let func of ["ln", "lg", "sin", "cos", "tan", "cot", "arcsin", "arccos", "arctan", "arccot", "abs"]) {
       if (!exprPart.startsWith(func)) continue;
   
       let arg;
-      [arg, currPos] = this._parseFunctionArguments(expr, currPos + func.length);
+      [arg, currPos] = this._parseFunctionArguments(expr, currPos + func.length, 1, variables);
       operand = new Operand(func, arg);
   
       return [operand, currPos];
@@ -330,7 +166,7 @@ export default class RPN {
   
     if (exprPart.startsWith("log")) {
       let logBase, logArg;
-      [logBase, logArg, currPos] = this._parseFunctionArguments(expr, currPos + 3, 2);            
+      [logBase, logArg, currPos] = this._parseFunctionArguments(expr, currPos + 3, 2, variables);            
       operand = new Operand("log", { logBase, logArg });
       
       return [operand, currPos];
@@ -339,7 +175,7 @@ export default class RPN {
     return [null, currPos];
   }
 
-  _parseFunctionArguments(expr, currPos, numOfArgs = 1) {  
+  _parseFunctionArguments(expr, currPos, numOfArgs = 1, variables) {  
     if (expr[currPos] !== "(") {
       throw new Error("Can't parse expression");
     }
@@ -348,7 +184,7 @@ export default class RPN {
   
     for (let i = 0; i < numOfArgs; i++) {
       let arg;
-      [arg, currPos] = this._getSubRPN(expr, currPos + 1);
+      [arg, currPos] = this._getSubRPN(expr, currPos + 1, variables);
       args.push(arg);
   
       if (i === numOfArgs - 1) break;
@@ -417,12 +253,12 @@ export default class RPN {
     return [+num, currPos];
   }
   
-  _getSubRPN(expr, currPos) {
+  _getSubRPN(expr, currPos, variables) {
     if (currPos >= expr.length) {
       throw new Error("Can't parse expression");
     }
   
-    const subRPN = this._getRPNExpression(expr, currPos);
+    const subRPN = this._getRPNExpression(expr, currPos, variables);
   
     if (subRPN[0] === null) {
       throw new Error("Can't parse expression");
@@ -443,8 +279,8 @@ export default class RPN {
   
     char = expr[currPos];
   
-    if (char in OPERATORS) {    
-      return [OPERATORS[char], currPos + 1];
+    if (char in RPN.OPERATORS) {    
+      return [RPN.OPERATORS[char], currPos + 1];
     }
     
     return [null, currPos];
