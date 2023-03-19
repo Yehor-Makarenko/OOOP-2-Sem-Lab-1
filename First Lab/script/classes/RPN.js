@@ -149,8 +149,8 @@ export default class RPN {
           result.push({value: Math.PI / 2 - Math.atan(arg.value), isVar: arg.isVar});
           break;
         case "log":
-          base = this._calcRPNExpression(currItem.value[0], varValue);
-          arg = this._calcRPNExpression(currItem.value[1], varValue);
+          base = this._calcRPNExpression(currItem.value.logBase, varValue);
+          arg = this._calcRPNExpression(currItem.value.logArg, varValue);
   
           if (base.value <= 0 || base.value === 1 || arg.value <= 0) return NaN;
   
