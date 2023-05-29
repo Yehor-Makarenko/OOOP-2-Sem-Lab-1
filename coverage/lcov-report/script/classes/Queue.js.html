@@ -210,7 +210,7 @@
 &nbsp;
   push(value) {
     const newItem = new Queue;
-    newItem.value = value;
+    newItem = value;
     this.length++;
 &nbsp;
     if (this.head === null) {
@@ -226,7 +226,7 @@
   shift() {
     if (this.head === null) return null;
     
-    const resValue = this.head.value;
+    const resValue = this.head;
     this.length--;
     this.head = this.head.next;
     return resValue;
@@ -234,7 +234,7 @@
 &nbsp;
 <span class="fstat-no" title="function not covered" >  ge</span>t() {
 <span class="cstat-no" title="statement not covered" >    if (this.head === null) <span class="cstat-no" title="statement not covered" >return null;</span></span>
-<span class="cstat-no" title="statement not covered" >    return this.head.value;</span>
+<span class="cstat-no" title="statement not covered" >    return this.head;</span>
   }
 &nbsp;
   static copy(queue) {
@@ -242,7 +242,7 @@
     let currItem = queue.head;
   
     while (currItem !== null) {
-      copy.push(currItem.value);
+      copy.push(currItem);
       currItem = currItem.next;
     }
 &nbsp;
@@ -257,7 +257,7 @@
       currItem = queue.head;
 &nbsp;
       while (currItem !== null) {
-        resultQueue.push(currItem.value);
+        resultQueue.push(currItem);
         currItem = currItem.next;
       }
     }

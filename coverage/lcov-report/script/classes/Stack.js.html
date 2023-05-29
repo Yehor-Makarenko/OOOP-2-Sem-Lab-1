@@ -142,7 +142,7 @@
   push(value) {
     const newItem = new Stack();
 &nbsp;
-    newItem.value = value;
+    newItem = value;
     newItem.prev = this.tale;
     this.tale = newItem;
     this.length++;
@@ -151,7 +151,7 @@
   pop() {
     if (this.tale === null) return null;
 &nbsp;
-    const resValue = this.tale.value;
+    const resValue = this.tale;
     this.tale = this.tale.prev;
     this.length--;
 &nbsp;
@@ -160,7 +160,7 @@
 &nbsp;
   get() {
     if (this.tale === null) return null;
-    return this.tale.value;
+    return this.tale;
   }
 }</pre></td></tr></table></pre>
 

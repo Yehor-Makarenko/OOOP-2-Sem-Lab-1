@@ -796,96 +796,96 @@ function calcRPN(rpn, varValue) {
   while (currItem !== null) {
     switch (currItem.type) {
       case "NUM":
-        result.push({value: currItem.value, isVar: false});
+        result.push({value: currItem, isVar: false});
         break;
       case "VAR":
         result.push({value: varValue, isVar: true});
         break;
       case "ln":
-        arg = calcRPN(currItem.value, varValue);
+        arg = calcRPN(currItem, varValue);
 &nbsp;
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (arg.value &lt;= 0) <span class="cstat-no" title="statement not covered" >return NaN;</span>
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (arg &lt;= 0) <span class="cstat-no" title="statement not covered" >return NaN;</span>
 &nbsp;
-        result.push({value: Math.log(arg.value), isVar: arg.isVar});
+        result.push({value: Math.log(arg), isVar: arg.isVar});
         break;
       case "lg":
-        arg = calcRPN(currItem.value, varValue);
+        arg = calcRPN(currItem, varValue);
 &nbsp;
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (arg.value &lt;= 0) <span class="cstat-no" title="statement not covered" >return NaN;</span>
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (arg &lt;= 0) <span class="cstat-no" title="statement not covered" >return NaN;</span>
 &nbsp;
-        result.push({value: Math.log10(arg.value), isVar: arg.isVar});
+        result.push({value: Math.log10(arg), isVar: arg.isVar});
         break;
       case "sin":
-        arg = calcRPN(currItem.value, varValue);       
-        result.push({value: Math.sin(arg.value), isVar: arg.isVar});
+        arg = calcRPN(currItem, varValue);       
+        result.push({value: Math.sin(arg), isVar: arg.isVar});
         break;
       case "cos":
-        arg = calcRPN(currItem.value, varValue);       
-        result.push({value: Math.cos(arg.value), isVar: arg.isVar});
+        arg = calcRPN(currItem, varValue);       
+        result.push({value: Math.cos(arg), isVar: arg.isVar});
         break;
       case "tan":
-        arg = calcRPN(currItem.value, varValue);       
-        result.push({value: Math.tan(arg.value), isVar: arg.isVar});
+        arg = calcRPN(currItem, varValue);       
+        result.push({value: Math.tan(arg), isVar: arg.isVar});
         break;
       case "cot":
-        arg = calcRPN(currItem.value, varValue);       
-        result.push({value: 1 / Math.tan(arg.value), isVar: arg.isVar});
+        arg = calcRPN(currItem, varValue);       
+        result.push({value: 1 / Math.tan(arg), isVar: arg.isVar});
         break;
       case "arcsin":
-        arg = calcRPN(currItem.value, varValue);       
-        result.push({value: Math.asin(arg.value), isVar: arg.isVar});
+        arg = calcRPN(currItem, varValue);       
+        result.push({value: Math.asin(arg), isVar: arg.isVar});
         break;
       case "arccos":
-        arg = calcRPN(currItem.value, varValue);       
-        result.push({value: Math.acos(arg.value), isVar: arg.isVar});
+        arg = calcRPN(currItem, varValue);       
+        result.push({value: Math.acos(arg), isVar: arg.isVar});
         break;
       case "arctan":
-        arg = calcRPN(currItem.value, varValue);       
-        result.push({value: Math.atan(arg.value), isVar: arg.isVar});
+        arg = calcRPN(currItem, varValue);       
+        result.push({value: Math.atan(arg), isVar: arg.isVar});
         break;
       case "arccot":
-        arg = calcRPN(currItem.value, varValue);       
-        result.push({value: Math.PI / 2 - Math.atan(arg.value), isVar: arg.isVar});
+        arg = calcRPN(currItem, varValue);       
+        result.push({value: Math.PI / 2 - Math.atan(arg), isVar: arg.isVar});
         break;
       case "log":
-        base = calcRPN(currItem.value[0], varValue);
-        arg = calcRPN(currItem.value[1], varValue);
+        base = calcRPN(currItem[0], varValue);
+        arg = calcRPN(currItem[1], varValue);
 &nbsp;
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (base.value &lt;= 0 || base.value === 1 || arg.value &lt;= 0) <span class="cstat-no" title="statement not covered" >return NaN;</span>
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (base &lt;= 0 || base === 1 || arg &lt;= 0) <span class="cstat-no" title="statement not covered" >return NaN;</span>
 &nbsp;
-        result.push({value: Math.log(arg.value) / Math.log(base.value), isVar: arg.isVar || <span class="branch-1 cbranch-no" title="branch not covered" >base.isVar}</span>);
+        result.push({value: Math.log(arg) / Math.log(base), isVar: arg.isVar || <span class="branch-1 cbranch-no" title="branch not covered" >base.isVar}</span>);
         break;
       case "u-":
         fItem = result.pop();
-        result.push({value: -fItem.value, isVar: fItem.isVar});
+        result.push({value: -fItem, isVar: fItem.isVar});
         break;
       case "+":
         fItem = result.pop();
         sItem = result.pop();
-        result.push({value: fItem.value + sItem.value, isVar: fItem.isVar || sItem.isVar});
+        result.push({value: fItem + sItem, isVar: fItem.isVar || sItem.isVar});
         break;
       case "-":
         fItem = result.pop();
         sItem = result.pop();
-        result.push({value: sItem.value - fItem.value, isVar: fItem.isVar || sItem.isVar});
+        result.push({value: sItem - fItem, isVar: fItem.isVar || sItem.isVar});
         break;
       case "*":        
         fItem = result.pop();
         sItem = result.pop();
-        result.push({value: fItem.value * sItem.value, isVar: fItem.isVar || sItem.isVar});
+        result.push({value: fItem * sItem, isVar: fItem.isVar || sItem.isVar});
         break;
       case "/":
         fItem = result.pop();
         sItem = result.pop();
-        result.push({value: sItem.value / fItem.value, isVar: fItem.isVar || sItem.isVar});
+        result.push({value: sItem / fItem, isVar: fItem.isVar || sItem.isVar});
         break;
       case "^":
         fItem = result.pop();
         sItem = result.pop();        
                 
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (sItem.value &lt; 0 &amp;&amp; fItem.isVar) <span class="cstat-no" title="statement not covered" >return NaN;</span>
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (sItem &lt; 0 &amp;&amp; fItem.isVar) <span class="cstat-no" title="statement not covered" >return NaN;</span>
 &nbsp;
-        result.push({value: Math.pow(sItem.value, fItem.value), isVar: fItem.isVar || sItem.isVar});
+        result.push({value: Math.pow(sItem, fItem), isVar: fItem.isVar || sItem.isVar});
         break;
     }
 &nbsp;
@@ -1001,7 +1001,7 @@ function getOperand(expr, startPos = 0, variable = "x") {
 &nbsp;
   if (expr[currPos] === "e") {
     operand.type = "NUM";
-    operand.value = Math.E;
+    operand = Math.E;
 &nbsp;
     return [operand, currPos + 1];
   }
@@ -1012,7 +1012,7 @@ function getOperand(expr, startPos = 0, variable = "x") {
     <span class="missing-if-branch" title="if path not taken" >I</span>if (currPos &gt;= expr.length || expr[currPos] !== "i") <span class="cstat-no" title="statement not covered" >return null;</span>
 &nbsp;
     operand.type = "NUM";
-    operand.value = Math.PI;
+    operand = Math.PI;
 &nbsp;
     return [operand, currPos + 1];
   }
@@ -1042,7 +1042,7 @@ function getOperand(expr, startPos = 0, variable = "x") {
     }
 &nbsp;
     operand.type = "NUM";
-    operand.value = +num;    
+    operand = +num;    
 &nbsp;
     return [operand, currPos];
   }
@@ -1070,7 +1070,7 @@ function getOperand(expr, startPos = 0, variable = "x") {
     <span class="missing-if-branch" title="if path not taken" >I</span>if (expr[currPos] !== ")") <span class="cstat-no" title="statement not covered" >return null;</span>
 &nbsp;
     operand.type = type;
-    operand.value = argData[0];
+    operand = argData[0];
     
     return [operand, currPos + 1];
   }
@@ -1097,7 +1097,7 @@ function getOperand(expr, startPos = 0, variable = "x") {
     <span class="missing-if-branch" title="if path not taken" >I</span>if (expr[currPos] !== ")") <span class="cstat-no" title="statement not covered" >return null;</span>
 &nbsp;
     operand.type = "log";
-    operand.value = [logBaseData[0], logArgData[0]];
+    operand = [logBaseData[0], logArgData[0]];
     
     return [operand, currPos + 1];
   }

@@ -250,7 +250,7 @@ export default class RPN {
       if (currPos >= expr.length) break;
     }
   
-    return [+num, currPos];
+    return [num, currPos];
   }
   
   _getSubRPN(expr, currPos, variables) {

@@ -1,6 +1,7 @@
 import OneVariableRPN from "./classes/OneVariableRPN.js";
 import ImplicitRPN from "./classes/ImplicitRPN.js";
 
+new OneVariableRPN(`x + ${2976.0016761063143}`).getValueInPoint(-856.1744701651432);
 const canvas = document.getElementById("tutorial");
 const context = canvas.getContext("2d");
 const cw = canvas.width = 800;
@@ -22,11 +23,11 @@ drawImplicitFuncForm.onsubmit = function(event) {
   event.preventDefault();
   context.clearRect(0, 0, cw, ch);
 
-  const expr1 = drawImplicitFuncForm.elements.userExpr1.value;  
-  const expr2 = drawImplicitFuncForm.elements.userExpr2.value;  
+  const expr1 = drawImplicitFuncForm.elements.userExpr1;  
+  const expr2 = drawImplicitFuncForm.elements.userExpr2;  
   const rpn = new ImplicitRPN(expr1, expr2);
-  const xRes = +drawImplicitFuncForm.elements.xRes.value;
-  const yRes = +drawImplicitFuncForm.elements.yRes.value;    
+  const xRes = +drawImplicitFuncForm.elements.xRes;
+  const yRes = +drawImplicitFuncForm.elements.yRes;    
 
   drawImplicitFunc(rpn, xRes, yRes);
   drawCoordSystem(xRes, yRes)
@@ -36,10 +37,10 @@ drawFuncForm.onsubmit = function(event) {
   event.preventDefault();
   context.clearRect(0, 0, cw, ch);
 
-  const expr = drawFuncForm.elements.userExpr.value;  
+  const expr = drawFuncForm.elements.userExpr;  
   const rpn = parseExpressions(expr);
-  const xRes = +drawFuncForm.elements.xRes.value;
-  const yRes = +drawFuncForm.elements.yRes.value;  
+  const xRes = +drawFuncForm.elements.xRes;
+  const yRes = +drawFuncForm.elements.yRes;  
 
   drawFunc(rpn, xRes, yRes);
   drawCoordSystem(xRes, yRes);
@@ -49,12 +50,12 @@ areaForm.onsubmit = function(event) {
   event.preventDefault();
   context.clearRect(0, 0, cw, ch);
   
-  const expr = areaForm.elements.userExpr.value;
+  const expr = areaForm.elements.userExpr;
   const rpn = parseExpressions(expr);
-  const xRes = +areaForm.elements.xRes.value;
-  const yRes = +areaForm.elements.yRes.value;
-  const lBound = +areaForm.elements.lBound.value;
-  const rBound = +areaForm.elements.rBound.value;  
+  const xRes = +areaForm.elements.xRes;
+  const yRes = +areaForm.elements.yRes;
+  const lBound = +areaForm.elements.lBound;
+  const rBound = +areaForm.elements.rBound;  
   const area = getArea(rpn, cw, lBound, rBound);
 
   if (!isNaN(area)) {
@@ -70,13 +71,13 @@ intersectionForm.onsubmit = function(event) {
   event.preventDefault();
   context.clearRect(0, 0, cw, ch);
 
-  const expr1 = intersectionForm.elements.userExpr1.value;
-  const expr2 = intersectionForm.elements.userExpr2.value;  
+  const expr1 = intersectionForm.elements.userExpr1;
+  const expr2 = intersectionForm.elements.userExpr2;  
   const [rpn1, rpn2] = parseExpressions(expr1, expr2);
-  const xRes = +intersectionForm.elements.xRes.value;
-  const yRes = +intersectionForm.elements.yRes.value;
-  const lBound = +intersectionForm.elements.lBound.value;
-  const rBound = +intersectionForm.elements.rBound.value;
+  const xRes = +intersectionForm.elements.xRes;
+  const yRes = +intersectionForm.elements.yRes;
+  const lBound = +intersectionForm.elements.lBound;
+  const rBound = +intersectionForm.elements.rBound;
   const intersectionPoints = OneVariableRPN.getIntersectionPoints(rpn1, rpn2, lBound, rBound, cw);
   
   context.beginPath();  
@@ -92,7 +93,7 @@ intersectionForm.onsubmit = function(event) {
     pointsSet.add(`\n\tx: ${+point.x.toFixed(ResultPrecision)}, y: ${+point.y.toFixed(ResultPrecision)}`);
   }
 
-  document.getElementById("intersectionPoints").innerHTML = `Intersection points:${[...pointsSet.values()].join("")}`;
+  document.getElementById("intersectionPoints").innerHTML = `Intersection points:${[...pointsSets()].join("")}`;
 }
 
 function drawFunc(rpn, xRes, yRes) {

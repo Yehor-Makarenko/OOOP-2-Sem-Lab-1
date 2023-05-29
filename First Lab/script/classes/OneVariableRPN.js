@@ -171,7 +171,7 @@ export default class OneVariableRPN extends RPN {
     return currX;
   }
 
-  _getOperand(expr, startPos = 0, [variable]) {
+  _getOperand(expr, startPos = 0, [variable] = ["x"]) {
     let [operand, currPos] = super._getOperand(expr, startPos, [variable]);
 
     if (operand !== null) {

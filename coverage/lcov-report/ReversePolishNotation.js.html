@@ -790,96 +790,96 @@ function <span class="fstat-no" title="function not covered" >calcReversePolishN
 <span class="cstat-no" title="statement not covered" >  while (currItem !== null) {</span>
 <span class="cstat-no" title="statement not covered" >    switch (currItem.type) {</span>
       case "NUM":
-<span class="cstat-no" title="statement not covered" >        result.push({value: currItem.value, isVar: false});</span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: currItem, isVar: false});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "VAR":
 <span class="cstat-no" title="statement not covered" >        result.push({value: varValue, isVar: true});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "ln":
-<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem.value, varValue);</span>
+<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem, varValue);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        if (arg.value &lt;= 0) <span class="cstat-no" title="statement not covered" >return NaN;</span></span>
+<span class="cstat-no" title="statement not covered" >        if (arg &lt;= 0) <span class="cstat-no" title="statement not covered" >return NaN;</span></span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        result.push({value: Math.log(arg.value), isVar: arg.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: Math.log(arg), isVar: arg.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "lg":
-<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem.value, varValue);</span>
+<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem, varValue);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        if (arg.value &lt;= 0) <span class="cstat-no" title="statement not covered" >return NaN;</span></span>
+<span class="cstat-no" title="statement not covered" >        if (arg &lt;= 0) <span class="cstat-no" title="statement not covered" >return NaN;</span></span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        result.push({value: Math.log10(arg.value), isVar: arg.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: Math.log10(arg), isVar: arg.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "sin":
-<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem.value, varValue);       </span>
-<span class="cstat-no" title="statement not covered" >        result.push({value: Math.sin(arg.value), isVar: arg.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem, varValue);       </span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: Math.sin(arg), isVar: arg.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "cos":
-<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem.value, varValue);       </span>
-<span class="cstat-no" title="statement not covered" >        result.push({value: Math.cos(arg.value), isVar: arg.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem, varValue);       </span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: Math.cos(arg), isVar: arg.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "tan":
-<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem.value, varValue);       </span>
-<span class="cstat-no" title="statement not covered" >        result.push({value: Math.tan(arg.value), isVar: arg.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem, varValue);       </span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: Math.tan(arg), isVar: arg.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "cot":
-<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem.value, varValue);       </span>
-<span class="cstat-no" title="statement not covered" >        result.push({value: 1 / Math.tan(arg.value), isVar: arg.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem, varValue);       </span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: 1 / Math.tan(arg), isVar: arg.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "arcsin":
-<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem.value, varValue);       </span>
-<span class="cstat-no" title="statement not covered" >        result.push({value: Math.asin(arg.value), isVar: arg.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem, varValue);       </span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: Math.asin(arg), isVar: arg.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "arccos":
-<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem.value, varValue);       </span>
-<span class="cstat-no" title="statement not covered" >        result.push({value: Math.acos(arg.value), isVar: arg.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem, varValue);       </span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: Math.acos(arg), isVar: arg.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "arctan":
-<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem.value, varValue);       </span>
-<span class="cstat-no" title="statement not covered" >        result.push({value: Math.atan(arg.value), isVar: arg.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem, varValue);       </span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: Math.atan(arg), isVar: arg.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "arccot":
-<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem.value, varValue);       </span>
-<span class="cstat-no" title="statement not covered" >        result.push({value: Math.PI / 2 - Math.atan(arg.value), isVar: arg.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem, varValue);       </span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: Math.PI / 2 - Math.atan(arg), isVar: arg.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "log":
-<span class="cstat-no" title="statement not covered" >        base = calcReversePolishNotation(currItem.value[0], varValue);</span>
-<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem.value[1], varValue);</span>
+<span class="cstat-no" title="statement not covered" >        base = calcReversePolishNotation(currItem[0], varValue);</span>
+<span class="cstat-no" title="statement not covered" >        arg = calcReversePolishNotation(currItem[1], varValue);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        if (base.value &lt;= 0 || base.value === 1 || arg.value &lt;= 0) <span class="cstat-no" title="statement not covered" >return NaN;</span></span>
+<span class="cstat-no" title="statement not covered" >        if (base &lt;= 0 || base === 1 || arg &lt;= 0) <span class="cstat-no" title="statement not covered" >return NaN;</span></span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        result.push({value: Math.log(arg.value) / Math.log(base.value), isVar: arg.isVar || base.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: Math.log(arg) / Math.log(base), isVar: arg.isVar || base.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "u-":
 <span class="cstat-no" title="statement not covered" >        fItem = result.pop();</span>
-<span class="cstat-no" title="statement not covered" >        result.push({value: -fItem.value, isVar: fItem.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: -fItem, isVar: fItem.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "+":
 <span class="cstat-no" title="statement not covered" >        fItem = result.pop();</span>
 <span class="cstat-no" title="statement not covered" >        sItem = result.pop();</span>
-<span class="cstat-no" title="statement not covered" >        result.push({value: fItem.value + sItem.value, isVar: fItem.isVar || sItem.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: fItem + sItem, isVar: fItem.isVar || sItem.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "-":
 <span class="cstat-no" title="statement not covered" >        fItem = result.pop();</span>
 <span class="cstat-no" title="statement not covered" >        sItem = result.pop();</span>
-<span class="cstat-no" title="statement not covered" >        result.push({value: sItem.value - fItem.value, isVar: fItem.isVar || sItem.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: sItem - fItem, isVar: fItem.isVar || sItem.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "*":        
 <span class="cstat-no" title="statement not covered" >        fItem = result.pop();</span>
 <span class="cstat-no" title="statement not covered" >        sItem = result.pop();</span>
-<span class="cstat-no" title="statement not covered" >        result.push({value: fItem.value * sItem.value, isVar: fItem.isVar || sItem.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: fItem * sItem, isVar: fItem.isVar || sItem.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "/":
 <span class="cstat-no" title="statement not covered" >        fItem = result.pop();</span>
 <span class="cstat-no" title="statement not covered" >        sItem = result.pop();</span>
-<span class="cstat-no" title="statement not covered" >        result.push({value: sItem.value / fItem.value, isVar: fItem.isVar || sItem.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: sItem / fItem, isVar: fItem.isVar || sItem.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
       case "^":
 <span class="cstat-no" title="statement not covered" >        fItem = result.pop();</span>
 <span class="cstat-no" title="statement not covered" >        sItem = result.pop();        </span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        if (sItem.value &lt; 0 &amp;&amp; fItem.isVar) <span class="cstat-no" title="statement not covered" >return NaN;</span></span>
+<span class="cstat-no" title="statement not covered" >        if (sItem &lt; 0 &amp;&amp; fItem.isVar) <span class="cstat-no" title="statement not covered" >return NaN;</span></span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        result.push({value: Math.pow(sItem.value, fItem.value), isVar: fItem.isVar || sItem.isVar});</span>
+<span class="cstat-no" title="statement not covered" >        result.push({value: Math.pow(sItem, fItem), isVar: fItem.isVar || sItem.isVar});</span>
 <span class="cstat-no" title="statement not covered" >        break;</span>
     }
 &nbsp;
@@ -996,7 +996,7 @@ function getOperand(expr, startPos = <span class="branch-0 cbranch-no" title="br
 &nbsp;
   if (expr[currPos] === "e") {
     operand.type = "NUM";
-    operand.value = Math.E;
+    operand = Math.E;
 &nbsp;
     return [operand, currPos + 1];
   }
@@ -1007,7 +1007,7 @@ function getOperand(expr, startPos = <span class="branch-0 cbranch-no" title="br
     <span class="missing-if-branch" title="if path not taken" >I</span>if (currPos &gt;= expr.length || expr[currPos] !== "i") <span class="cstat-no" title="statement not covered" >return null;</span>
 &nbsp;
     operand.type = "NUM";
-    operand.value = Math.PI;
+    operand = Math.PI;
 &nbsp;
     return [operand, currPos + 1];
   }
@@ -1037,7 +1037,7 @@ function getOperand(expr, startPos = <span class="branch-0 cbranch-no" title="br
     }
 &nbsp;
     operand.type = "NUM";
-    operand.value = +num;    
+    operand = +num;    
 &nbsp;
     return [operand, currPos];
   }
@@ -1065,7 +1065,7 @@ function getOperand(expr, startPos = <span class="branch-0 cbranch-no" title="br
 <span class="cstat-no" title="statement not covered" >    if (expr[currPos] !== ")") <span class="cstat-no" title="statement not covered" >return null;</span></span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    operand.type = type;</span>
-<span class="cstat-no" title="statement not covered" >    operand.value = argData[0];</span>
+<span class="cstat-no" title="statement not covered" >    operand = argData[0];</span>
     
 <span class="cstat-no" title="statement not covered" >    return [operand, currPos + 1];</span>
   }
@@ -1092,7 +1092,7 @@ function getOperand(expr, startPos = <span class="branch-0 cbranch-no" title="br
 <span class="cstat-no" title="statement not covered" >    if (expr[currPos] !== ")") <span class="cstat-no" title="statement not covered" >return null;</span></span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    operand.type = "log";</span>
-<span class="cstat-no" title="statement not covered" >    operand.value = [logBaseData[0], logArgData[0]];</span>
+<span class="cstat-no" title="statement not covered" >    operand = [logBaseData[0], logArgData[0]];</span>
     
 <span class="cstat-no" title="statement not covered" >    return [operand, currPos + 1];</span>
   }

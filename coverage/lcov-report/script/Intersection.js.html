@@ -179,15 +179,15 @@ function getIntersectionPoints(rpn1, rpn2, numOfIntervals, lBound, rBound) {
   for (let i = 0; i &lt; numOfIntervals; i++) {
     const x1 = lBound + i * diff / numOfIntervals;
     const x2 = lBound + (i + 1) * diff / numOfIntervals;
-    const y1 = calcRPN(resultRPN, x1).value;
-    const y2 = calcRPN(resultRPN, x2).value;    
+    const y1 = calcRPN(resultRPN, x1);
+    const y2 = calcRPN(resultRPN, x2);    
     let resultX;
 &nbsp;
     <span class="missing-if-branch" title="if path not taken" >I</span>if (y1 === 0) {
-<span class="cstat-no" title="statement not covered" >      resultPoints.push(new Point(x1, calcRPN(rpn1, x1).value));</span>
+<span class="cstat-no" title="statement not covered" >      resultPoints.push(new Point(x1, calcRPN(rpn1, x1)));</span>
 <span class="cstat-no" title="statement not covered" >      continue;</span>
     } else <span class="missing-if-branch" title="if path not taken" >I</span>if (y2 === 0) {
-<span class="cstat-no" title="statement not covered" >      if (i === numOfIntervals - 1) <span class="cstat-no" title="statement not covered" >resultPoints.push(new Point(x2, calcRPN(rpn1, x2).value));</span></span>
+<span class="cstat-no" title="statement not covered" >      if (i === numOfIntervals - 1) <span class="cstat-no" title="statement not covered" >resultPoints.push(new Point(x2, calcRPN(rpn1, x2)));</span></span>
 <span class="cstat-no" title="statement not covered" >      continue;</span>
     }
     
@@ -196,7 +196,7 @@ function getIntersectionPoints(rpn1, rpn2, numOfIntervals, lBound, rBound) {
     if (y1 * y2 &gt; 0) continue;
 &nbsp;
     resultX = newtonMethod(resultRPN, x1 + 0.00001, 0.00001);
-    resultPoints.push(new Point(resultX, calcRPN(rpn1, resultX).value));
+    resultPoints.push(new Point(resultX, calcRPN(rpn1, resultX)));
   }
 &nbsp;
   return resultPoints;
@@ -207,9 +207,9 @@ function newtonMethod(rpn, firstX, accuracy) {
   let prevX = currX + accuracy + 1;
 &nbsp;
   while (Math.abs(currX - prevX) &gt; accuracy) {    
-    const derivative = (calcRPN(rpn, currX + accuracy).value 
-      - calcRPN(rpn, currX - accuracy).value) / (2 * accuracy);
-    [currX, prevX] = [currX - calcRPN(rpn, currX).value / derivative, currX];    
+    const derivative = (calcRPN(rpn, currX + accuracy) 
+      - calcRPN(rpn, currX - accuracy)) / (2 * accuracy);
+    [currX, prevX] = [currX - calcRPN(rpn, currX) / derivative, currX];    
   }
 &nbsp;
   return currX;
