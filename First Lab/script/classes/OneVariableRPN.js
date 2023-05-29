@@ -40,6 +40,7 @@ export default class OneVariableRPN extends RPN {
       if (y1 * y2 > 0) continue;
   
       resultX = rpn1._newtonMethod(resultRPN, x1 + 0.00001, 0.00001);
+      if (isNaN(resultX)) continue;
       resultPoints.push(new Point(resultX, rpn1.getValueInPoint(resultX)));
     }
   
